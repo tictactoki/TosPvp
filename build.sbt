@@ -1,5 +1,7 @@
 name := """TosPvp"""
 
+lazy val root = (project in file(".")).enablePlugins(SbtWeb)
+
 version := "1.0"
 
 scalaVersion := "2.12.1"
