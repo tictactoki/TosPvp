@@ -97,6 +97,11 @@ case class Swordsman(override val build: Build) extends Circle {
   override protected val HPMultiplier: Double = 3.3
   override protected val buffLimit: Int = 7
   override protected val SPMultiplier: Double = 0.8
+
+  // To determine the damage taken after DEF, the basic formula is dmg = atk - def
+  override protected def getPhysicalDefense: Int = super.getPhysicalDefense + build.level / 4
+
+  override protected def getBlock: Double = super.getBlock + (0.03 * build.level)
 }
 
 case class Archer(override val build: Build) extends Circle {
@@ -104,6 +109,13 @@ case class Archer(override val build: Build) extends Circle {
   override protected val HPMultiplier: Double = 1.4
   override protected val buffLimit: Int = 5
   override protected val SPMultiplier: Double = 0.9
+
+  //TODO: see with Stuff
+  override protected def getCriticalRate: Long = super.getCriticalRate + build.level / 5
+
+  override protected def getEvasion: Long = super.getEvasion + build.level / 8
+
+  override protected def getAccuracy: Long = super.getAccuracy + ((build.level + 4) / 4)
 }
 
 case class Cleric(override val build: Build) extends Circle {
@@ -111,6 +123,10 @@ case class Cleric(override val build: Build) extends Circle {
   override protected val HPMultiplier: Double = 1.5
   override protected val buffLimit: Int = 7
   override protected val SPMultiplier: Double = 1.2
+
+  override protected def getSP: Double = super.getSP + (1.675 * build.level)
+
+  override protected def getSPRecovery: Long = super.getSPRecovery + build.level / 4
 }
 
 case class Wizard(override val build: Build) extends Circle {
@@ -118,4 +134,7 @@ case class Wizard(override val build: Build) extends Circle {
   override protected val HPMultiplier: Double = 1.1
   override protected val buffLimit: Int = 5
   override protected val SPMultiplier: Double = 1.2
+
+  // To determine the damage taken after MDEF, the basic formula is mdmg = matk - mdef
+  override protected def getMagicDefense: Long = super.getMagicDefense + build.level / 4
 }
