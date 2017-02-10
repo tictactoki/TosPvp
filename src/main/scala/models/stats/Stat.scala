@@ -24,3 +24,5 @@ case class BasicStat(hp: Long,
                      hpRecovery: Long,
                      spRecovery: Long,
                      maximumCarryWeight: Long) extends Stat
+
+case class MainStat(str: Long, con: Long, int: Long, spr: Long, dex: Long) extends Stat
