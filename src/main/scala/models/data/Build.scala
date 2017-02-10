@@ -19,7 +19,14 @@ case class Stuff(hat: Option[Hat] = None,
                  boots: Option[Boots] = None,
                  costume: Option[Costume] = None,
                  armband: Option[Armband] = None
-                )
+                ) {
+
+  def getTotalEvasion: Int = 0
+  def getTotalCriticalResistance: Int = 0
+  def getTotalCriticalAttack: Int = 0
+  def getTotalCriticalRate: Int = 0
+
+}
 
 
 case class Build(id: Option[String], level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
