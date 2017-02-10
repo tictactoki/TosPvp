@@ -5,6 +5,11 @@ package models.equipments
   */
 sealed trait Dagger extends Weapon with Secondary
 
+object Dagger {
+  final val Karacha = "Karacha"
+  final val Arde = "Arde"
+}
+
 case class Karacha() extends Dagger {
   override val dex: Int = 11
   override val physicalAttack = 176

@@ -6,6 +6,7 @@ package models.equipments
 
 sealed trait Equipment {
 
+
   val aoeRatio: Int = 0
   val accuracy: Int = 0
   val physicalAttack: Int = 0
@@ -25,9 +26,6 @@ sealed trait Equipment {
   val blockRate: Int = 0
 
 
-
-
-
   val con: Int = 0
   val spr: Int = 0
   val str: Int = 0
@@ -35,23 +33,34 @@ sealed trait Equipment {
   val dex: Int = 0
 
 
-
 }
 
 trait Secondary
 
 trait Weapon extends Equipment
+
 trait Boots extends Equipment
+
 trait Gloves extends Equipment
+
 trait Pant extends Equipment
+
 trait Shirt extends Equipment
+
 trait Shield extends Equipment with Secondary
+
 trait Armband extends Equipment
+
 trait Artefact extends Equipment
+
 trait Charm extends Equipment
+
 trait Costume extends Equipment
+
 trait Hat extends Equipment
+
 trait Necklace extends Equipment
+
 trait Ring extends Equipment
 
 object Equipment {
