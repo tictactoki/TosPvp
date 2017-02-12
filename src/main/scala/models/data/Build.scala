@@ -29,4 +29,10 @@ case class Stuff(hat: Option[Hat] = None,
 }
 
 
-case class Build(id: Option[String], level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
+case class Build(id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
+
+object BuildFormat {
+  import spray.json.DefaultJsonProtocol._
+  implicit val buildFormat = jsonFormat4(Build)
+  implicit val stuffFormat = jsonFormat12(Stuff)
+}

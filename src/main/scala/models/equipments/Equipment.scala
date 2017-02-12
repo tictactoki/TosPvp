@@ -79,3 +79,11 @@ object Equipment {
   final val Ring = "Ring"
 
 }
+
+object EquipmentFormat {
+  import spray.json.DefaultJsonProtocol._
+
+ // implicit val hatFormat = jsonFormat22(Hat)
+
+
+}
