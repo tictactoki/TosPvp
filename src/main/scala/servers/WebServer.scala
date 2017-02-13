@@ -26,10 +26,11 @@ object WebServer extends App {
 
   val sword = Sword("test")
 
-  val stuff = Stuff(Option(sword))
+  val stuff = Stuff(Some(sword))
 
  // val user = User("test")
-  //val build = Build(level = 2, mainStat = MainStat(1,1,1,1,1))
+  val build = Build(Some("1"),level = 2, mainStat = MainStat(1,1,1,1,1), stuff = stuff)
+  println(build)
 
   val route =
     path("hello") {
@@ -40,7 +41,7 @@ object WebServer extends App {
       }
     } ~ path("build") {
       get {
-        complete(sword)
+        complete(build)
       }
     }
 

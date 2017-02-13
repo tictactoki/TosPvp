@@ -37,6 +37,18 @@ sealed trait Weapon extends Equipment {
   val twoHanded: Boolean
 }
 
+sealed trait PrimaryWeapon extends WeaponSet with Primary
+
+sealed trait SecondaryWeapon extends WeaponSet with Secondary
+
+sealed trait TwoHandedWeapon extends PrimaryWeapon with Secondary
+
+object PrimaryWeapon {
+
+  def apply(): PrimaryWeapon = Sword("test")
+
+}
+
 object Weapon {
   final val Sword = "Sword"
   final val Dagger = "Dagger"
@@ -58,7 +70,7 @@ case class Sword(override val name: String,
                  override val twoHanded: Boolean = false,
                  override val `type`: String = Weapon.Sword,
                  override val category: String = WeaponSet.Slash
-                ) extends WeaponSet with Primary
+                ) extends PrimaryWeapon
 
 
 case class Dagger(override val name: String,
@@ -68,17 +80,16 @@ case class Dagger(override val name: String,
                   override val basicStat: BasicStat,
                   override val twoHanded: Boolean = false,
                   override val `type`: String = Weapon.Dagger,
-                  override val category: String = WeaponSet.Stab) extends WeaponSet with Secondary {
-
-}
+                  override val category: String = WeaponSet.Stab) extends SecondaryWeapon
 
 case class Boots(override val name: String,
                  override val category: String,
-                 override val mainStat: MainStat,
-                 override val offensiveStat: OffensiveStat,
-                 override val defensiveStat: DefensiveStat,
-                 override val basicStat: BasicStat) extends ArmorSet {
-  override val `type`: String = Equipment.Boots
+                 override val mainStat: MainStat = MainStat(),
+                 override val offensiveStat: OffensiveStat = OffensiveStat(),
+                 override val defensiveStat: DefensiveStat = DefensiveStat(),
+                 override val basicStat: BasicStat = BasicStat(),
+                 override val `type`: String = Equipment.Boots) extends ArmorSet {
+
 }
 
 

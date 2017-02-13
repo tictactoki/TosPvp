@@ -13,7 +13,7 @@ case class Stuff(/*hat: Option[Hat] = None,
                  rings: List[Ring] = Nil,
                  shirt: Option[Shirt] = None,
                  pant: Option[Pant] = None,
-                 */firstArm: Option[WeaponSet with Primary] = None/*,
+                 */firstArm: Option[PrimaryWeapon] = None/*,
                  secondaryArm: Option[Secondary] = None,
                  gloves: Option[Gloves] = None,
                  boots: Option[Boots] = None,
@@ -28,5 +28,6 @@ case class Stuff(/*hat: Option[Hat] = None,
 
 }
 
+case class ArmorSet()
 
 case class Build(id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
