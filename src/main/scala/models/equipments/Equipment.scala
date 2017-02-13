@@ -1,5 +1,7 @@
 package models.equipments
 
+import models.stats.{DefensiveStat, BasicStat, OffensiveStat, MainStat}
+
 /**
   * Created by stephane on 09/02/2017.
   */
@@ -7,68 +9,135 @@ package models.equipments
 sealed trait Equipment {
 
 
-  val aoeRatio: Int = 0
-  val accuracy: Int = 0
-  val physicalAttack: Int = 0
-  val physicalDefense: Int = 0
-  val magicAttack: Int = 0
-  val magicDefense: Int = 0
-  val magicAmplification: Int = 0
-  val sp: Int = 0
-  val hp: Int = 0
-  val evasion: Int = 0
-  val maxStamina: Int = 0
-  val movementSpeed: Int = 0
-  val criticalResistance: Int = 0
-  val hpRecovery: Int = 0
-  val blockPenetration: Int = 0
-  val block: Int = 0
-  val blockRate: Int = 0
+  // type of the equipment like boots or gloves, necessary for json
+  val `type`: String
+  val name: String
+  val mainStat: MainStat = MainStat()
+  val offensiveStat: OffensiveStat = OffensiveStat()
+  val basicStat: BasicStat = BasicStat()
+  val defensiveStat: DefensiveStat = DefensiveStat()
+
+}
+
+sealed trait ArmorSet extends Equipment {
+  // cloth, leather, plate, ghost
+  val category: String
+}
+
+sealed trait WeaponSet extends Weapon {
+  // slash, stab, hit, magic
+  val category: String
+}
+
+sealed trait Secondary
+
+sealed trait Primary
+
+sealed trait Weapon extends Equipment {
+  val twoHanded: Boolean
+}
+
+object Weapon {
+  final val Sword = "Sword"
+  final val Dagger = "Dagger"
+}
+
+object WeaponSet {
+  final val Slash = "Slash"
+  final val Stab = "Stab"
+  final val Hit = "Hit"
+  final val Magic = "Magic"
+}
 
 
-  val con: Int = 0
-  val spr: Int = 0
-  val str: Int = 0
-  val int: Int = 0
-  val dex: Int = 0
+case class Sword(override val name: String,
+                 override val mainStat: MainStat = MainStat(),
+                 override val offensiveStat: OffensiveStat = OffensiveStat(),
+                 override val defensiveStat: DefensiveStat = DefensiveStat(),
+                 override val basicStat: BasicStat = BasicStat(),
+                 override val twoHanded: Boolean = false,
+                 override val `type`: String = Weapon.Sword,
+                 override val category: String = WeaponSet.Slash
+                ) extends WeaponSet with Primary
+
+
+case class Dagger(override val name: String,
+                  override val mainStat: MainStat,
+                  override val offensiveStat: OffensiveStat,
+                  override val defensiveStat: DefensiveStat,
+                  override val basicStat: BasicStat,
+                  override val twoHanded: Boolean = false,
+                  override val `type`: String = Weapon.Dagger,
+                  override val category: String = WeaponSet.Stab) extends WeaponSet with Secondary {
+
+}
+
+case class Boots(override val name: String,
+                 override val category: String,
+                 override val mainStat: MainStat,
+                 override val offensiveStat: OffensiveStat,
+                 override val defensiveStat: DefensiveStat,
+                 override val basicStat: BasicStat) extends ArmorSet {
+  override val `type`: String = Equipment.Boots
+}
+
+
+trait Gloves extends Equipment
+
+object Gloves
+
+trait Pants extends Equipment
+
+object Pants
+
+trait Shirt extends Equipment
+
+object Shirt
+
+trait Shield extends Equipment with Secondary
+
+object Shield
+
+trait Armband extends Equipment
+
+object Armband
+
+trait Artefact extends Equipment
+
+object Artefact
+
+trait Charm extends Equipment
+
+object Charm
+
+trait Costume extends Equipment
+
+object Costume
+
+trait Hat extends Equipment
+
+case object Hat {
+
+  final val BearEyemask = "BearEyeMask"
+  final val BigLionmask = "BigLionMask"
 
 
 }
 
-trait Secondary
-
-trait Weapon extends Equipment
-
-trait Boots extends Equipment
-
-trait Gloves extends Equipment
-
-trait Pant extends Equipment
-
-trait Shirt extends Equipment
-
-trait Shield extends Equipment with Secondary
-
-trait Armband extends Equipment
-
-trait Artefact extends Equipment
-
-trait Charm extends Equipment
-
-trait Costume extends Equipment
-
-trait Hat extends Equipment
-
 trait Necklace extends Equipment
 
+object Necklace
+
 trait Ring extends Equipment
+
+object Ring
 
 object Equipment {
 
   final val Weapon = "Weapon"
   final val Boots = "Boots"
   final val Gloves = "Gloves"
-  final val Pant = "Pant"
+  final val Pants = "Pants"
   final val Shield = "Shield"
   final val Armband = "Armband"
   final val Artefact = "Artefact"
@@ -77,13 +146,6 @@ object Equipment {
   final val Hat = "Hat"
   final val Necklace = "Necklace"
   final val Ring = "Ring"
-
-}
-
-object EquipmentFormat {
-  import spray.json.DefaultJsonProtocol._
-
- // implicit val hatFormat = jsonFormat22(Hat)
 
 
 }

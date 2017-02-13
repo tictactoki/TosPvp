@@ -9,30 +9,31 @@ import spray.json.DefaultJsonProtocol._
 
 sealed trait Stat
 
-case class OffensiveStat(physicalAttack: Long,
-                         secondaryPhysicalAttack: Long,
-                         magicAttack: Long,
-                         aoeAttackRatio: Int,
-                         blockPenetration: Long,
-                         criticalAttack: Long,
-                         criticalRate: Long) extends Stat
+case class OffensiveStat(physicalAttack: Long = 0,
+                         secondaryPhysicalAttack: Long = 0,
+                         magicAttack: Long = 0,
+                         aoeAttackRatio: Int = 0,
+                         blockPenetration: Long = 0,
+                         criticalAttack: Long = 0,
+                         criticalRate: Long = 0,
+                         magicAmplification: Long = 0,
+                         accuracy: Long = 0
+                        ) extends Stat
 
-case class DefensiveStat(physicalDefense: Long,
-                         magicDefense: Long,
-                         evasion: Long,
-                         block: Long) extends Stat
+case class DefensiveStat(physicalDefense: Long = 0,
+                         magicDefense: Long = 0,
+                         evasion: Long = 0,
+                         block: Long = 0,
+                         blockRate: Long = 0,
+                         criticalResistance: Long = 0
+                        ) extends Stat
 
-case class BasicStat(hp: Long,
-                     sp: Long,
-                     hpRecovery: Long,
-                     spRecovery: Long,
-                     maximumCarryWeight: Long) extends Stat
+case class BasicStat(hp: Long = 0,
+                     sp: Long = 0,
+                     hpRecovery: Long = 0,
+                     spRecovery: Long = 0,
+                     maximumCarryWeight: Long = 0,
+                     maximumStamina: Long = 20
+                    ) extends Stat
 
-case class MainStat(str: Long, con: Long, int: Long, spr: Long, dex: Long) extends Stat
-
-object StatFormat {
-  implicit val offensiveStatFormat = jsonFormat7(OffensiveStat)
-  implicit val defensiveStatFormat = jsonFormat4(DefensiveStat)
-  implicit val basicStatFormat = jsonFormat5(BasicStat)
-  implicit val mainStatFormat = jsonFormat5(MainStat)
-}
+case class MainStat(str: Long = 0, con: Long = 0, int: Long = 0, spr: Long = 0, dex: Long = 0) extends Stat

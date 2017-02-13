@@ -5,14 +5,14 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl._
 import akka.http.scaladsl.server.Directives._
-import models.User
+import models.equipments.Sword
 
 
 import scala.io.StdIn
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import models.data.Build
+import models.data.{Stuff, Build}
 import models.stats.MainStat
-import models.stats.StatFormat._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import formats.JsonFormat._
 
 
 /**
@@ -24,8 +24,12 @@ object WebServer extends App {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
+  val sword = Sword("test")
+
+  val stuff = Stuff(Option(sword))
+
  // val user = User("test")
-  val build = Build(level = 2, mainStat = MainStat(1,1,1,1,1))
+  //val build = Build(level = 2, mainStat = MainStat(1,1,1,1,1))
 
   val route =
     path("hello") {
@@ -36,7 +40,7 @@ object WebServer extends App {
       }
     } ~ path("build") {
       get {
-        complete(build)
+        complete(sword)
       }
     }
 

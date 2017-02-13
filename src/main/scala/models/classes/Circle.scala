@@ -1,8 +1,9 @@
 package models.classes
 
 
-import models.data.Build
+import models.data.{Stuff, Build}
 import models.equipments.Weapon
+import models.stats.{BasicStat, DefensiveStat, OffensiveStat}
 
 import scala.collection.mutable.HashMap
 
@@ -23,15 +24,15 @@ sealed trait Circle {
   protected val buffLimit: Int
   protected val blockMultiplier = 1
 
-  protected def initStat = (getBasicStat,getDefensiveStat, getOffensiveStat)
+  lazy val (basicStat,defensiveStat,offensiveStat) = (getBasicStat,getDefensiveStat, getOffensiveStat)
 
-  protected def getDefensiveStat = (getPhysicalDefense, getMagicDefense, getEvasion, getBlock)
+  protected def getDefensiveStat = DefensiveStat(getPhysicalDefense, getMagicDefense, getEvasion, getBlock.toLong)
 
-  protected def getOffensiveStat = (getPhysicalAttack(), getSecPhysicalAttack(), getMagicAttack(), getAoeRatio(), getBlockPenetration, getCriticalAttack, getCriticalRate)
+  protected def getOffensiveStat: OffensiveStat = OffensiveStat(getPhysicalAttack(), getSecPhysicalAttack(), getMagicAttack(), getAoeRatio(), getBlockPenetration, getCriticalAttack, getCriticalRate)
 
-  protected def getBasicStat = (getHP, getSP, getHPRecovery, getMaxWeightLimit)
+  protected def getBasicStat = BasicStat(getHP.toLong, getSP.toLong, getHPRecovery, getMaxWeightLimit, getMaximumStamina())
 
-  protected def getAoeRatio(weapon: Option[Weapon] = None): Int = aoeRatio + weapon.map(_.aoeRatio).getOrElse(0)
+  protected def getAoeRatio(weapon: Option[Weapon] = None): Int = aoeRatio + weapon.map(_.offensiveStat.aoeAttackRatio).getOrElse(0)
 
   protected def getHP = (85 * build.mainStat.con + 17 * HPMultiplier * (build.level - 1))
 
@@ -45,10 +46,10 @@ sealed trait Circle {
   protected def getPhysicalAttack(weapon: Option[Weapon] = None) = build.mainStat.str + build.level
 
   //TODO: See stuff
-  protected def getSecPhysicalAttack(weapon: Option[Weapon] = None) = build.mainStat
+  protected def getSecPhysicalAttack(weapon: Option[Weapon] = None) = build.mainStat.str
 
   // TODO: see Stuff
-  protected def getMagicAttack(weapon: Option[Weapon] = None) = build.mainStat.int + build.level + weapon.map(_.magicAttack).getOrElse(0)
+  protected def getMagicAttack(weapon: Option[Weapon] = None) = build.mainStat.int + build.level + weapon.map(_.offensiveStat.magicAttack).getOrElse(0L)
 
   //TODO: see formula with Stuff
   protected def getCriticalAttack = build.mainStat.str
@@ -79,6 +80,11 @@ sealed trait Circle {
   protected def getMaxWeightLimit = 5000 + 5 * build.mainStat.con + 5 * build.mainStat.str
 
   protected def getMovementSpeed = 30
+
+  // see stuff
+  protected def getMaximumStamina(stuff: Option[Stuff] = None) = 20
+
+  protected def getBlockRate(stuff: Option[Stuff] = None) = 0
 
 }
 

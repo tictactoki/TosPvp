@@ -7,18 +7,18 @@ import models.stats.MainStat
   * Created by stephane on 10/02/2017.
   */
 
-case class Stuff(hat: Option[Hat] = None,
+case class Stuff(/*hat: Option[Hat] = None,
                  charm: Option[Charm] = None,
                  necklace: Option[Necklace] = None,
                  rings: List[Ring] = Nil,
                  shirt: Option[Shirt] = None,
                  pant: Option[Pant] = None,
-                 firstArm: Option[Weapon] = None,
+                 */firstArm: Option[WeaponSet with Primary] = None/*,
                  secondaryArm: Option[Secondary] = None,
                  gloves: Option[Gloves] = None,
                  boots: Option[Boots] = None,
                  costume: Option[Costume] = None,
-                 armband: Option[Armband] = None
+                 armband: Option[Armband] = None*/
                 ) {
 
   def getTotalEvasion: Int = 0
@@ -30,9 +30,3 @@ case class Stuff(hat: Option[Hat] = None,
 
 
 case class Build(id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
-
-object BuildFormat {
-  import spray.json.DefaultJsonProtocol._
-  implicit val buildFormat = jsonFormat4(Build)
-  implicit val stuffFormat = jsonFormat12(Stuff)
-}
