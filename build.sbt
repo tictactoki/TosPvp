@@ -1,16 +1,19 @@
 name := """TosPvp"""
 
-lazy val root = (project in file(".")).enablePlugins(SbtWeb)
+lazy val root = (project in file("."))
 
 version := "1.0"
 
 scalaVersion := "2.12.1"
 
-val akkaVersion = "2.4.16"
+scalacOptions := Seq("-deprecation")
+
+val akkaVersion = "2.4.17"
 
 val httpVersion = "10.0.3"
 
 libraryDependencies ++= Seq(
+  "org.slf4j" % "slf4j-simple" % "1.6.4",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-agent" % akkaVersion,
   "com.typesafe.akka" %% "akka-camel" % akkaVersion,
@@ -37,5 +40,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % httpVersion,
   "com.typesafe.akka" %% "akka-http-jackson" % httpVersion,
   "com.typesafe.akka" %% "akka-http-xml" % httpVersion,
+  "org.reactivemongo" %% "reactivemongo" % "0.12.1",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )

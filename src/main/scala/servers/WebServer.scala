@@ -5,15 +5,22 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl._
 import akka.http.scaladsl.server.Directives._
+import db.Mongo
+import models.User
 import models.equipments.Sword
+import reactivemongo.api.{Cursor, ReadPreference}
+import reactivemongo.api.collections.bson.BSONCollection
+import reactivemongo.bson.{Macros, BSONDocument, BSONHandler}
 
 
+import scala.concurrent.Future
 import scala.io.StdIn
 import models.data.{Stuff, Build}
 import models.stats.MainStat
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import spray.json.DefaultJsonProtocol._
 import formats.JsonFormat._
-
+import models.User._
 
 /**
   * Created by stephane on 08/02/2017.
@@ -28,9 +35,11 @@ object WebServer extends App {
 
   val stuff = Stuff(Some(sword))
 
- // val user = User("test")
+  val user = User("test")
   val build = Build(Some("1"),level = 2, mainStat = MainStat(1,1,1,1,1), stuff = stuff)
-  println(build)
+  val db = Mongo.db.map(_.collection[BSONCollection]("users"))
+  val u: Future[List[User]] = db.flatMap(_.find(BSONDocument()).cursor[User]().collect[List](1).map { l => l})
+
 
   val route =
     path("hello") {
@@ -41,7 +50,9 @@ object WebServer extends App {
       }
     } ~ path("build") {
       get {
-        complete(build)
+        onSuccess(u){ users =>
+          complete(users)
+        }
       }
     }
 

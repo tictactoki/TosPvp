@@ -13,13 +13,12 @@ import spray.json.{JsValue, RootJsonFormat}
 object JsonFormat {
 
 
-  implicit val userFormat = jsonFormat1(User)
+  implicit val userFormat = jsonFormat1(User.apply)
   implicit val offensiveStatFormat = jsonFormat9(OffensiveStat)
   implicit val defensiveStatFormat = jsonFormat6(DefensiveStat)
   implicit val basicStatFormat = jsonFormat6(BasicStat)
   implicit val mainStatFormat = jsonFormat5(MainStat)
   implicit val swordFormat: RootJsonFormat[Sword] = jsonFormat8(Sword.apply)
-  //implicit val primaryWeaponFormat = jsonFormat8(PrimaryWeapon.apply)
 
   implicit object PrimaryWeaponFormat extends RootJsonFormat[PrimaryWeapon] {
     override def read(json: JsValue): PrimaryWeapon = {

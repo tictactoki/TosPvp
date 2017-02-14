@@ -43,12 +43,6 @@ sealed trait SecondaryWeapon extends WeaponSet with Secondary
 
 sealed trait TwoHandedWeapon extends PrimaryWeapon with Secondary
 
-object PrimaryWeapon {
-
-  def apply(): PrimaryWeapon = Sword("test")
-
-}
-
 object Weapon {
   final val Sword = "Sword"
   final val Dagger = "Dagger"
