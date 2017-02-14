@@ -33,8 +33,12 @@ case class ArmorSet()
 
 case class Build(id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
 
-object Build {
+object Stuff {
+  implicit val stuffHandler = Macros.handler[Stuff]
+}
 
-  //implicit val buildWriter: BSONHandler[BSONDocument, Build] = Macros.handler[Build]
+object Build {
+  import Stuff._
+  implicit val buildHandler = Macros.handler[Build]
 
 }

@@ -1,6 +1,7 @@
 package models.stats
 
 import models.data.{Build, Stuff}
+import reactivemongo.bson.{Macros, BSONDocument, BSONHandler}
 import spray.json.DefaultJsonProtocol._
 
 /**
@@ -37,3 +38,19 @@ case class BasicStat(hp: Long = 0,
                     ) extends Stat
 
 case class MainStat(str: Long = 0, con: Long = 0, int: Long = 0, spr: Long = 0, dex: Long = 0) extends Stat
+
+object OffensiveStat {
+  implicit val offensiveStatHandler = Macros.handler[OffensiveStat]
+}
+
+object DefensiveStat {
+  implicit val defensiveStatHandler = Macros.handler[DefensiveStat]
+}
+
+object BasicStat {
+  implicit val basicStathandler = Macros.handler[BasicStat]
+}
+
+object MainStat {
+  implicit val mainStatHandler = Macros.handler[MainStat]
+}

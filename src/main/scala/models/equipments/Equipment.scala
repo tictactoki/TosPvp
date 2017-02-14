@@ -1,6 +1,7 @@
 package models.equipments
 
 import models.stats.{DefensiveStat, BasicStat, OffensiveStat, MainStat}
+import reactivemongo.bson.{BSONDocumentReader, Macros, BSONDocument, BSONHandler}
 
 /**
   * Created by stephane on 09/02/2017.
@@ -39,9 +40,43 @@ sealed trait Weapon extends Equipment {
 
 sealed trait PrimaryWeapon extends WeaponSet with Primary
 
+object PrimaryWeapon {
+
+  implicit object PrimaryWeaponHandler extends BSONHandler[BSONDocument, PrimaryWeapon] {
+    override def write(pw: PrimaryWeapon): BSONDocument = pw match {
+      case s:Sword => Sword.swordHandler.write(s)
+      case _ => throw new Exception("fail on primary writer")
+    }
+
+    override def read(bson: BSONDocument): PrimaryWeapon = {
+      bson.getAs[String]("type") match {
+        case Some(Weapon.Sword) => Sword.swordHandler.read(bson)
+        case _ => throw new Exception("fail on primary reader")
+      }
+    }
+  }
+
+  //implicit val primaryWeaponHandler = Macros.handler[PrimaryWeapon]
+  /*implicit object PrimaryWeaponReader extends BSONDocumentReader[PrimaryWeapon] {
+    override def read(bson: BSONDocument): PrimaryWeapon = {
+      bson.getAs[String]("type") match {
+        case Some(Weapon.Sword) => Sword.swordHandler.read(bson)
+        case _ => throw new Exception("fail on primary reader")
+      }
+    }
+  }*/
+
+
+}
+
 sealed trait SecondaryWeapon extends WeaponSet with Secondary
 
-sealed trait TwoHandedWeapon extends PrimaryWeapon with Secondary
+/*sealed trait TwoHandedWeapon extends PrimaryWeapon with Secondary
+
+object TwoHandedWeapon {
+  implicit val twoHandedWeaponHandler = Macros.handler[TwoHandedWeapon]
+}*/
+
 
 object Weapon {
   final val Sword = "Sword"
@@ -66,6 +101,9 @@ case class Sword(override val name: String,
                  override val category: String = WeaponSet.Slash
                 ) extends PrimaryWeapon
 
+object Sword {
+  implicit val swordHandler = Macros.handler[Sword]
+}
 
 case class Dagger(override val name: String,
                   override val mainStat: MainStat,

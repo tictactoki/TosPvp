@@ -21,6 +21,8 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
 import formats.JsonFormat._
 import models.User._
+import models.data.Build._
+import models.data.Stuff._
 
 /**
   * Created by stephane on 08/02/2017.
@@ -37,8 +39,9 @@ object WebServer extends App {
 
   val user = User("test")
   val build = Build(Some("1"),level = 2, mainStat = MainStat(1,1,1,1,1), stuff = stuff)
-  val db = Mongo.db.map(_.collection[BSONCollection]("users"))
-  val u: Future[List[User]] = db.flatMap(_.find(BSONDocument()).cursor[User]().collect[List](1).map { l => l})
+  val db = Mongo.db.map(_.collection[BSONCollection]("builds"))
+  //Mongo.db.map(_.collection[BSONCollection]("builds")).flatMap(_.insert(Build.buildHandler.write(build)))
+  val u = db.flatMap(_.find(BSONDocument()).cursor[Build]().collect[List](3).map { l => l})
 
 
   val route =
@@ -51,6 +54,7 @@ object WebServer extends App {
     } ~ path("build") {
       get {
         onSuccess(u){ users =>
+          //println(users)
           complete(users)
         }
       }
