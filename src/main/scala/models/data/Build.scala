@@ -2,7 +2,8 @@ package models.data
 
 import models.equipments._
 import models.stats.MainStat
-import reactivemongo.bson.{Macros, BSONDocument, BSONHandler, BSONWriter}
+import reactivemongo.bson._
+import spray.json.DefaultJsonProtocol._
 
 /**
   * Created by stephane on 10/02/2017.
@@ -31,7 +32,7 @@ case class Stuff(/*hat: Option[Hat] = None,
 
 case class ArmorSet()
 
-case class Build(id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
+case class Build(_id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
 
 object Stuff {
   implicit val stuffHandler = Macros.handler[Stuff]
