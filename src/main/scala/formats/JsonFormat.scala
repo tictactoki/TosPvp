@@ -18,7 +18,7 @@ object JsonFormat {
   implicit val defensiveStatFormat = jsonFormat6(DefensiveStat.apply)
   implicit val basicStatFormat = jsonFormat6(BasicStat.apply)
   implicit val mainStatFormat = jsonFormat5(MainStat.apply)
-  implicit val swordFormat: RootJsonFormat[Sword] = jsonFormat8(Sword.apply)
+  implicit val swordFormat: RootJsonFormat[Sword] = jsonFormat9(Sword.apply)
 
   implicit object PrimaryWeaponFormat extends RootJsonFormat[PrimaryWeapon] {
     override def read(json: JsValue): PrimaryWeapon = {

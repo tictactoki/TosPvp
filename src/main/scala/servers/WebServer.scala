@@ -33,7 +33,7 @@ object WebServer extends App {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val sword = Sword("test")
+  val sword = Sword(name = "test")
 
   val stuff = Stuff(Some(sword))
 
@@ -41,6 +41,7 @@ object WebServer extends App {
   val build = Build(level = 2, mainStat = MainStat(1,1,1,1,1), stuff = stuff)
   MongoCRUDController.insert[Build](MongoCollection.Builds,build)
   val db = MongoConnection.getCollection(MongoCollection.Builds)
+  val f = MongoCRUDController.getAll[Build](MongoCollection.Builds, BSONDocument())
 
 
   val route =
@@ -50,12 +51,13 @@ object WebServer extends App {
           HttpEntity(ContentTypes.`text/html(UTF-8)`,"<h1>Hello</h1>")
         }
       }
-    }/* ~ path("build") {
+    } ~ path("build") {
       get {
-
+          onSuccess(f) { list =>
+            complete(list)
         }
       }
-    }*/
+    }
 
   val bindingFuture = Http().bindAndHandle(route,"localhost", 8090)
 

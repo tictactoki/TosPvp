@@ -1,5 +1,6 @@
 package models.data
 
+import _root_.utils.KeyGenerator
 import models.equipments._
 import models.stats.MainStat
 import reactivemongo.bson._
@@ -32,7 +33,7 @@ case class Stuff(/*hat: Option[Hat] = None,
 
 case class ArmorSet()
 
-case class Build(_id: Option[String] = None, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
+case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
 
 object Stuff {
   implicit val stuffHandler = Macros.handler[Stuff]

@@ -2,6 +2,7 @@ package models.equipments
 
 import models.stats.{BasicStat, DefensiveStat, OffensiveStat, MainStat}
 import reactivemongo.bson.{Macros, BSONDocument, BSONHandler}
+import utils.KeyGenerator
 
 /**
   * Created by stephane on 15/02/2017.
@@ -68,7 +69,8 @@ object WeaponSet {
 }
 
 
-case class Sword(override val name: String,
+case class Sword(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+                 override val name: String,
                  override val mainStat: MainStat = MainStat(),
                  override val offensiveStat: OffensiveStat = OffensiveStat(),
                  override val defensiveStat: DefensiveStat = DefensiveStat(),

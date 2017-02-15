@@ -7,6 +7,6 @@ import reactivemongo.bson.BSONObjectID
   */
 object KeyGenerator {
 
-  def createNewKeyAsString = BSONObjectID.generate().toString()
+  def createNewKeyAsString = Some(BSONObjectID.generate().stringify)
 
 }
