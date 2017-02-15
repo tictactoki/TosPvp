@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl._
 import akka.http.scaladsl.server.Directives._
-import db.Mongo
+import db.{MongoCollection, MongoConnection, Mongo}
 import models.User
 import models.equipments.Sword
 import reactivemongo.api.{Cursor, ReadPreference}
@@ -39,7 +39,7 @@ object WebServer extends App {
 
   val user = User("test")
   val build = Build(Some("1"),level = 2, mainStat = MainStat(1,1,1,1,1), stuff = stuff)
-  val db = Mongo.db.map(_.collection[BSONCollection]("builds"))
+  val db = MongoConnection.getCollection(MongoCollection.Builds)
   //Mongo.db.map(_.collection[BSONCollection]("builds")).flatMap(_.insert(Build.buildHandler.write(build)))
   val u = db.flatMap(_.find(BSONDocument()).cursor[Build]().collect[List](3).map { l => l})
 
