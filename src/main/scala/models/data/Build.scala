@@ -14,12 +14,9 @@ case class Stuff(/*hat: Option[Hat] = None,
                  charm: Option[Charm] = None,
                  necklace: Option[Necklace] = None,
                  rings: List[Ring] = Nil,
-                 shirt: Option[Shirt] = None,
-                 pant: Option[Pant] = None,
-                 */firstArm: Option[PrimaryWeapon] = None/*,
+                 armorSet: Option[ArmorSet] = None,
+                 */firstArm: Option[Weapon] = None/*,
                  secondaryArm: Option[Secondary] = None,
-                 gloves: Option[Gloves] = None,
-                 boots: Option[Boots] = None,
                  costume: Option[Costume] = None,
                  armband: Option[Armband] = None*/
                 ) {
@@ -31,7 +28,7 @@ case class Stuff(/*hat: Option[Hat] = None,
 
 }
 
-case class ArmorSet()
+case class ArmorSet(shirt: Option[Shirt], pants: Option[Pants], boots: Option[Boots], gloves: Option[Gloves])
 
 case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
 

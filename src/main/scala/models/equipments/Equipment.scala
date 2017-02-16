@@ -1,5 +1,6 @@
 package models.equipments
 
+import _root_.utils.KeyGenerator
 import models.stats.{DefensiveStat, BasicStat, OffensiveStat, MainStat}
 import reactivemongo.bson._
 
@@ -11,7 +12,7 @@ trait Equipment {
 
 
   // equipment type like boots or gloves, necessary for json
-  val _id: Option[String] = None
+  val _id: Option[String] = KeyGenerator.createNewKeyAsString
   val `type`: String
   val name: String
   val mainStat: MainStat = MainStat()

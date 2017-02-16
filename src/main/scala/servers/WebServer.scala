@@ -7,7 +7,7 @@ import akka.http.scaladsl._
 import akka.http.scaladsl.server.Directives._
 import db.{MongoCRUDController, MongoCollection, MongoConnection}
 import models.User
-import models.equipments.Sword
+import models.equipments.{Weapon}
 import reactivemongo.api.{Cursor, ReadPreference}
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.bson.{BSONObjectID, Macros, BSONDocument, BSONHandler}
@@ -33,12 +33,12 @@ object WebServer extends App {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val sword = Sword(name = "test")
+  val weapon = Weapon(name = "test", `type` = Weapon.Sword)
 
-  val stuff = Stuff(Some(sword))
+  val stuff = Stuff(Some(weapon))
 
   val user = User("test")
-  val build = Build(level = 2, mainStat = MainStat(1,1,1,1,1), stuff = stuff)
+  val build = Build(level = 3, mainStat = MainStat(10,15,19,11,1), stuff = stuff)
   MongoCRUDController.insert[Build](MongoCollection.Builds,build)
   val db = MongoConnection.getCollection(MongoCollection.Builds)
   val f = MongoCRUDController.getAll[Build](MongoCollection.Builds, BSONDocument())

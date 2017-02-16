@@ -1,32 +1,52 @@
 package models.equipments
 
 import models.stats.{BasicStat, DefensiveStat, OffensiveStat, MainStat}
+import reactivemongo.bson.Macros
+import utils.KeyGenerator
 
 /**
   * Created by stephane on 15/02/2017.
   */
 
-sealed trait ArmorSet extends Equipment {
+sealed trait Armor extends Equipment {
   // cloth, leather, plate, ghost
   val category: String
 }
 
-case class Boots(override val name: String,
+case class Boots(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+                 override val name: String,
                  override val category: String,
                  override val mainStat: MainStat = MainStat(),
                  override val offensiveStat: OffensiveStat = OffensiveStat(),
                  override val defensiveStat: DefensiveStat = DefensiveStat(),
                  override val basicStat: BasicStat = BasicStat(),
-                 override val `type`: String = Equipment.Boots) extends ArmorSet {
+                 override val `type`: String = Equipment.Boots) extends Armor
 
+object Boots {
+  implicit val bootsHandler = Macros.handler[Boots]
 }
 
+case class Gloves(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+                  override val name: String,
+                  override val category: String,
+                  override val mainStat: MainStat = MainStat(),
+                  override val offensiveStat: OffensiveStat = OffensiveStat(),
+                  override val defensiveStat: DefensiveStat = DefensiveStat(),
+                  override val basicStat: BasicStat = BasicStat(),
+                  override val `type`: String = Equipment.Gloves) extends Armor
 
-trait Gloves extends Equipment
+object Gloves {
+  implicit val glovesHandler = Macros.handler[Gloves]
+}
 
-object Gloves
-
-trait Pants extends Equipment
+case class Pants(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+                 override val name: String,
+                 override val category: String,
+                 override val mainStat: MainStat = MainStat(),
+                 override val offensiveStat: OffensiveStat = OffensiveStat(),
+                 override val defensiveStat: DefensiveStat = DefensiveStat(),
+                 override val basicStat: BasicStat = BasicStat(),
+                 override val `type`: String = Equipment.Pants) extends Armor
 
 object Pants
 
