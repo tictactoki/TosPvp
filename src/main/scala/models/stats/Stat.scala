@@ -24,6 +24,7 @@ case class OffensiveStat(physicalAttack: Long = 0,
 case class DefensiveStat(physicalDefense: Long = 0,
                          magicDefense: Long = 0,
                          evasion: Long = 0,
+                         evasion: Long = 0,
                          block: Long = 0,
                          blockRate: Long = 0,
                          criticalResistance: Long = 0
