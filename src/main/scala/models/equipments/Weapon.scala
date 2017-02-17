@@ -2,20 +2,20 @@ package models.equipments
 
 import models.stats.{BasicStat, DefensiveStat, OffensiveStat, MainStat}
 import reactivemongo.bson.{Macros, BSONDocument, BSONHandler}
-import utils.KeyGenerator
+import utils.{ConstantsFields, KeyGenerator}
 
 /**
   * Created by stephane on 15/02/2017.
   */
 
-sealed trait WeaponSet extends Equipment {
+sealed abstract class WeaponSet extends Equipment {
 
   protected def init = `type` match {
-    case Weapon.Sword => (Some(WeaponSet.Slash), false,true,false)
-    case Weapon.TwoHandedSpear=> (Some(WeaponSet.Stab), true,true,true)
-    case Weapon.TwoHandedSword => (Some(WeaponSet.Slash), true,true,true)
-    case Weapon.Dagger => (Some(WeaponSet.Stab), false,false,true)
-    case Weapon.Shield => (None,false,false,true)
+    case ConstantsFields.Sword => (Some(ConstantsFields.Slash), false,true,false)
+    case ConstantsFields.TwoHandedSpear=> (Some(ConstantsFields.Stab), true,true,true)
+    case ConstantsFields.TwoHandedSword => (Some(ConstantsFields.Slash), true,true,true)
+    case ConstantsFields.Dagger => (Some(ConstantsFields.Stab), false,false,true)
+    case ConstantsFields.Shield => (None,false,false,true)
     case _ => (None,false,false,false)
   }
 
@@ -51,39 +51,13 @@ case class Weapon(override val _id: Option[String] = KeyGenerator.createNewKeyAs
 
 }*/
 
-
+object WeaponSet {
+  //implicit val
+}
 
 
 object Weapon {
-  final val Sword = "Sword"
-  final val Dagger = "Dagger"
-  final val Shield = "Shield"
-  final val TwoHandedSword = "TwoHandedSword"
-  final val Bow = "Bow"
-  final val Staff = "Staff"
-  final val Rod = "Rod"
-  final val Spear = "Spear"
-  final val TwoHandedSpear = "TwoHandedSpear"
-  final val Mace = "Mace"
-  final val Rapier = "Rapier"
-  final val Pistol = "Pistol"
-  final val Cannon = "Cannon"
-  final val Musket = "Musket"
-  final val Crossbow = "Crossbow"
-
-  final val Category = "category"
-
   implicit val weaponHandler = Macros.handler[Weapon]
-
-}
-
-object WeaponSet {
-
-  final val Slash = "Slash"
-  final val Stab = "Stab"
-  final val Hit = "Hit"
-  final val Magic = "Magic"
-  final val Neutral = "Neutral"
 }
 
 

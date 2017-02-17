@@ -37,14 +37,12 @@ case class Stuff(/*hat: Option[Hat] = None,
 
 case class ArmorSet(shirt: Option[Shirt], pants: Option[Pants], boots: Option[Boots], gloves: Option[Gloves])
 
-case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuff: Stuff = Stuff())
+case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuff: Stuff = new Stuff())
 
 object Stuff {
   implicit val stuffHandler = Macros.handler[Stuff]
 }
 
 object Build {
-  import Stuff._
   implicit val buildHandler = Macros.handler[Build]
-
 }

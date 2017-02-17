@@ -2,7 +2,7 @@ package models.equipments
 
 import models.stats.{BasicStat, DefensiveStat, OffensiveStat, MainStat}
 import reactivemongo.bson.Macros
-import utils.KeyGenerator
+import utils.{ConstantsFields, KeyGenerator}
 
 /**
   * Created by stephane on 15/02/2017.
@@ -20,7 +20,7 @@ case class Boots(override val _id: Option[String] = KeyGenerator.createNewKeyAsS
                  override val offensiveStat: OffensiveStat = OffensiveStat(),
                  override val defensiveStat: DefensiveStat = DefensiveStat(),
                  override val basicStat: BasicStat = BasicStat(),
-                 override val `type`: String = Equipment.Boots) extends Armor
+                 override val `type`: String = ConstantsFields.Boots) extends Armor
 
 object Boots {
   implicit val bootsHandler = Macros.handler[Boots]
@@ -33,7 +33,7 @@ case class Gloves(override val _id: Option[String] = KeyGenerator.createNewKeyAs
                   override val offensiveStat: OffensiveStat = OffensiveStat(),
                   override val defensiveStat: DefensiveStat = DefensiveStat(),
                   override val basicStat: BasicStat = BasicStat(),
-                  override val `type`: String = Equipment.Gloves) extends Armor
+                  override val `type`: String = ConstantsFields.Gloves) extends Armor
 
 object Gloves {
   implicit val glovesHandler = Macros.handler[Gloves]
@@ -46,7 +46,7 @@ case class Pants(override val _id: Option[String] = KeyGenerator.createNewKeyAsS
                  override val offensiveStat: OffensiveStat = OffensiveStat(),
                  override val defensiveStat: DefensiveStat = DefensiveStat(),
                  override val basicStat: BasicStat = BasicStat(),
-                 override val `type`: String = Equipment.Pants) extends Armor
+                 override val `type`: String = ConstantsFields.Pants) extends Armor
 
 object Pants
 

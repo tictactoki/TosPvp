@@ -23,31 +23,4 @@ trait Equipment {
 }
 
 
-object Equipment {
-
-  // constant for reader/writer
-  final val Type = "type"
-  final val Name = "name"
-  final val MainStat = "mainStat"
-  final val OffensiveStat = "offensiveStat"
-  final val DefensiveStat = "defensiveStat"
-  final val BasicStat = "basicStat"
-
-  // constant for subclasses
-  final val Weapon = "Weapon"
-  final val Boots = "Boots"
-  final val Gloves = "Gloves"
-  final val Pants = "Pants"
-  final val Shield = "Shield"
-  final val Armband = "Armband"
-  final val Artefact = "Artefact"
-  final val Charm = "Charm"
-  final val Costume = "Costume"
-  final val Hat = "Hat"
-  final val Necklace = "Necklace"
-  final val Ring = "Ring"
-
-
-}
-
 

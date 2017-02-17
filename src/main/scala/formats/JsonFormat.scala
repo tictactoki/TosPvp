@@ -1,11 +1,15 @@
 package formats
 
 import models.User
+import models.classes.{CircleFactory, Circle}
 import models.data.{Stuff, Build}
 import models.equipments._
 import models.stats.{OffensiveStat, DefensiveStat, BasicStat, MainStat}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
+import utils.ConstantsFields
+
+import scala.util.Try
 
 /**
   * Created by stephane on 08/02/2017.
@@ -18,27 +22,47 @@ object JsonFormat {
   implicit val defensiveStatFormat: RootJsonFormat[DefensiveStat] = jsonFormat6(DefensiveStat.apply)
   implicit val basicStatFormat: RootJsonFormat[BasicStat] = jsonFormat6(BasicStat.apply)
   implicit val mainStatFormat: RootJsonFormat[MainStat] = jsonFormat5(MainStat.apply)
-  private val weaponFormat = jsonFormat7(Weapon.apply)
+  val weaponFormat: RootJsonFormat[Weapon] = jsonFormat7(Weapon.apply)
 
-  implicit object Format extends RootJsonFormat[Weapon] {
+  implicit object WeaponFormat extends RootJsonFormat[Weapon] {
     override def write(obj: Weapon): JsValue = {
+      //weaponFormat.write(obj)
       JsObject(
-        Equipment.Name -> JsString(obj.name),
-        Weapon.Category -> obj.category.map(c => JsString(c)).getOrElse(JsNull),
-        Equipment.MainStat -> mainStatFormat.write(obj.mainStat),
-        Equipment.OffensiveStat -> offensiveStatFormat.write(obj.offensiveStat),
-        Equipment.DefensiveStat -> defensiveStatFormat.write(obj.defensiveStat),
-        Equipment.BasicStat -> basicStatFormat.write(obj.basicStat),
-        Equipment.Type -> JsString(obj.`type`)
+        ConstantsFields.Id -> obj._id.map(id => JsString(id)).getOrElse(JsNull),
+        ConstantsFields.Name -> JsString(obj.name),
+        ConstantsFields.Category -> obj.category.map(c => JsString(c)).getOrElse(JsNull),
+        ConstantsFields.TwoHanded -> JsBoolean(obj.twoHanded),
+        ConstantsFields.Primary -> JsBoolean(obj.primary),
+        ConstantsFields.Secondary -> JsBoolean(obj.secondary),
+        ConstantsFields.MainStat -> mainStatFormat.write(obj.mainStat),
+        ConstantsFields.OffensiveStat -> offensiveStatFormat.write(obj.offensiveStat),
+        ConstantsFields.DefensiveStat -> defensiveStatFormat.write(obj.defensiveStat),
+        ConstantsFields.BasicStat -> basicStatFormat.write(obj.basicStat),
+        ConstantsFields.Type -> JsString(obj.`type`)
       )
 
     }
 
-    override def read(json: JsValue): Weapon = json.asJsObject.fields(Equipment.Type) match {
-      case JsString(Weapon.Sword) => weaponFormat.read(json)
+    override def read(json: JsValue): Weapon = json.asJsObject.fields(ConstantsFields.Type) match {
+      case JsString(ConstantsFields.Sword) => weaponFormat.read(json)
       case _ => throw new Exception("Type weapon doesn't exist")
     }
   }
+
+  /*implicit object CircleFormat extends RootJsonFormat[Circle] {
+    override def write(obj: Circle): JsValue = {
+      JsObject(
+        ConstantsFields.BasicStat -> basicStatFormat.write(obj.basicStat),
+        ConstantsFields.DefensiveStat -> defensiveStatFormat.write(obj.defensiveStat),
+        ConstantsFields.OffensiveStat -> offensiveStatFormat.write(obj.offensiveStat),
+        ConstantsFields.Build -> buildFormat.write(obj.build)
+      )
+    }
+
+    override def read(json: JsValue): Circle = {
+      Try (CircleFactory(buildFormat.read(json))).getOrElse(throw new Exception("The json format is not correct" +  json))
+    }
+  }*/
 
   /*implicit object WeaponSetFormat extends RootJsonFormat[WeaponSet] {
     override def read(json: JsValue): WeaponSet = {
@@ -55,7 +79,6 @@ object JsonFormat {
     }
   }*/
 
-  implicit val stuffFormat = jsonFormat1(Stuff.apply)
-  //implicit val hatFormat = jsonFormat1(Hat.apply)
-  implicit val buildFormat = jsonFormat5(Build.apply)
+  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat1(Stuff.apply)
+  implicit val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
 }
