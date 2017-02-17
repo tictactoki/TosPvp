@@ -71,6 +71,8 @@ object Weapon {
   final val Musket = "Musket"
   final val Crossbow = "Crossbow"
 
+  final val Category = "category"
+
   implicit val weaponHandler = Macros.handler[Weapon]
 
 }

@@ -24,7 +24,7 @@ sealed trait Circle {
   protected val buffLimit: Int
   protected val blockMultiplier = 1
 
-  lazy val (basicStat,defensiveStat,offensiveStat) = (getBasicStat,getDefensiveStat, getOffensiveStat)
+  val (basicStat,defensiveStat,offensiveStat) = (getBasicStat,getDefensiveStat, getOffensiveStat)
 
   protected def getDefensiveStat = DefensiveStat(getPhysicalDefense, getMagicDefense, getEvasion, getBlock.toLong)
 
@@ -85,6 +85,23 @@ sealed trait Circle {
   protected def getMaximumStamina(stuff: Option[Stuff] = None) = 20
 
   protected def getBlockRate(stuff: Option[Stuff] = None) = 0
+
+}
+
+object CircleFactory {
+
+  final val Cleric = "Cleric"
+  final val Archer = "Archer"
+  final val Swordsman = "Swordsman"
+  final val Wizard = "Wizard"
+
+  def apply(build: Build): Circle = build.circleName match {
+    case Cleric => new Cleric(build)
+    case Archer => new Archer(build)
+    case Swordsman => new Swordsman(build)
+    case Wizard => new Wizard(build)
+    case _ => throw new Exception("Circle doesn't exist")
+  }
 
 }
 

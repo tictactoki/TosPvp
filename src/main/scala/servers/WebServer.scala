@@ -7,6 +7,7 @@ import akka.http.scaladsl._
 import akka.http.scaladsl.server.Directives._
 import db.{MongoCRUDController, MongoCollection, MongoConnection}
 import models.User
+import models.classes.CircleFactory
 import models.equipments.{Weapon}
 import reactivemongo.api.{Cursor, ReadPreference}
 import reactivemongo.api.collections.bson.BSONCollection
@@ -38,7 +39,10 @@ object WebServer extends App {
   val stuff = Stuff(Some(weapon))
 
   val user = User("test")
-  val build = Build(level = 3, mainStat = MainStat(10,15,19,11,1), stuff = stuff)
+  val build = Build(level = 3, circleName = "Archer", mainStat = MainStat(10,15,19,11,1), stuff = stuff)
+  val circle = CircleFactory(build)
+  println(circle)
+  println(circle.basicStat)
   MongoCRUDController.insert[Build](MongoCollection.Builds,build)
   val db = MongoConnection.getCollection(MongoCollection.Builds)
   val f = MongoCRUDController.getAll[Build](MongoCollection.Builds, BSONDocument())

@@ -27,6 +27,11 @@ object Equipment {
 
   // constant for reader/writer
   final val Type = "type"
+  final val Name = "name"
+  final val MainStat = "mainStat"
+  final val OffensiveStat = "offensiveStat"
+  final val DefensiveStat = "defensiveStat"
+  final val BasicStat = "basicStat"
 
   // constant for subclasses
   final val Weapon = "Weapon"
