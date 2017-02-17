@@ -26,8 +26,8 @@ object JsonFormat {
 
   implicit object WeaponFormat extends RootJsonFormat[Weapon] {
     override def write(obj: Weapon): JsValue = {
-      //weaponFormat.write(obj)
-      JsObject(
+
+      /*JsObject(
         ConstantsFields.Id -> obj._id.map(id => JsString(id)).getOrElse(JsNull),
         ConstantsFields.Name -> JsString(obj.name),
         ConstantsFields.Category -> obj.category.map(c => JsString(c)).getOrElse(JsNull),
@@ -39,7 +39,13 @@ object JsonFormat {
         ConstantsFields.DefensiveStat -> defensiveStatFormat.write(obj.defensiveStat),
         ConstantsFields.BasicStat -> basicStatFormat.write(obj.basicStat),
         ConstantsFields.Type -> JsString(obj.`type`)
-      )
+      )*/
+      JsObject(weaponFormat.write(obj).asJsObject().fields + (
+        ConstantsFields.Category -> obj.category.map(c => JsString(c)).getOrElse(JsNull),
+        ConstantsFields.TwoHanded -> JsBoolean(obj.twoHanded),
+        ConstantsFields.Primary -> JsBoolean(obj.primary),
+        ConstantsFields.Secondary -> JsBoolean(obj.secondary)
+      ))
 
     }
 
