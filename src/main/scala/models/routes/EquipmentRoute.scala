@@ -13,6 +13,12 @@ trait EquipmentRoute {
 
   val equipmentRoute = path("equipments") {
     get {
+        parameter("_id".as[String]) { id =>
+          onSuccess(MongoCRUDController.getEquipmentById(id)) { equipment =>
+            complete(equipment)
+          }
+        }
+      } ~ get {
       onSuccess(MongoCRUDController.getAllEquipments) { equipments =>
         complete(equipments)
       }

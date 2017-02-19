@@ -24,13 +24,14 @@ import formats.JsonFormat._
 import models.User._
 import models.data.Build._
 import models.data.Stuff._
+import models.routes.{BuildRoute, EquipmentRoute}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
 /**
   * Created by stephane on 08/02/2017.
   */
-object WebServer extends App {
+object WebServer extends BuildRoute with EquipmentRoute with App {
 
   import Build._
 
@@ -45,7 +46,7 @@ object WebServer extends App {
 
 
   val user = User("test")
-  val build = new Build(level = 3, circleName = "Archer", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
+  val build = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
   val circle = CircleFactory(build)
   MongoCRUDController.insertBuild(build)
   MongoCRUDController.insertEquipment(armor)
@@ -59,19 +60,8 @@ object WebServer extends App {
           HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Hello</h1>")
         }
       }
-    } ~ path("build") {
-      get {
-        onSuccess(MongoCRUDController.getAllBuilds) { list =>
-          complete(list)
-        }
-      }
-    } ~ path("equipments") {
-      get {
-        onSuccess(MongoCRUDController.getAllEquipments) { list =>
-          complete(list)
-        }
-      }
-    }
+    } ~ buildRoute ~ equipmentRoute
+
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8090)
 

@@ -55,7 +55,7 @@ object MongoCRUDController {
   import MongoCollection._
 
   protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id-> id)
-  lazy val query = (fieldName: String, value: String) => BSONDocument(fieldName -> value)
+  def query (fieldName: String, value: String) = BSONDocument(fieldName -> value)
 
   protected def failHandler[T]: Cursor.ErrorHandler[List[T]] = {
     (last: List[T], error: Throwable) =>
@@ -109,9 +109,13 @@ object MongoCRUDController {
   def getStat(query: BSONDocument) = get[MainStat](Stats,query)
   def getEquipment(query: BSONDocument) = get[Equipment](Equipments,query)
 
-  def getBuildById(id: String) = getBuild(queryId(id))
-  def getStatById(id: String) = getStat(queryId(id))
-  def getEquipmentById(id: String) = getEquipment(queryId(id))
+  def getBuilds(query: BSONDocument) = getAll[Build](Builds,query)
+  def getStats(query: BSONDocument) = getAll[MainStat](Stats,query)
+  def getEquipments(query: BSONDocument) = getAll[Equipment](Equipments,query)
+
+  val getBuildById = (id: String) => getBuild(queryId(id))
+  val getStatById = (id: String) => getStat(queryId(id))
+  val getEquipmentById = (id: String) => getEquipment(queryId(id))
 
 }
 
