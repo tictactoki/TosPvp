@@ -47,20 +47,6 @@ object JsonFormat {
 
   implicit object WeaponFormat extends RootJsonFormat[Weapon] {
     override def write(obj: Weapon): JsValue = {
-
-      /*JsObject(
-        ConstantsFields.Id -> obj._id.map(id => JsString(id)).getOrElse(JsNull),
-        ConstantsFields.Name -> JsString(obj.name),
-        ConstantsFields.Category -> obj.category.map(c => JsString(c)).getOrElse(JsNull),
-        ConstantsFields.TwoHanded -> JsBoolean(obj.twoHanded),
-        ConstantsFields.Primary -> JsBoolean(obj.primary),
-        ConstantsFields.Secondary -> JsBoolean(obj.secondary),
-        ConstantsFields.MainStat -> mainStatFormat.write(obj.mainStat),
-        ConstantsFields.OffensiveStat -> offensiveStatFormat.write(obj.offensiveStat),
-        ConstantsFields.DefensiveStat -> defensiveStatFormat.write(obj.defensiveStat),
-        ConstantsFields.BasicStat -> basicStatFormat.write(obj.basicStat),
-        ConstantsFields.Type -> JsString(obj.`type`)
-      )*/
       JsObject(weaponFormat.write(obj).asJsObject().fields + (
         ConstantsFields.Category -> obj.category.map(c => JsString(c)).getOrElse(JsNull),
         ConstantsFields.TwoHanded -> JsBoolean(obj.twoHanded),
@@ -76,7 +62,7 @@ object JsonFormat {
     }
   }
 
-  /*implicit object CircleFormat extends RootJsonFormat[Circle] {
+  implicit object CircleFormat extends RootJsonFormat[Circle] {
     override def write(obj: Circle): JsValue = {
       JsObject(
         ConstantsFields.BasicStat -> basicStatFormat.write(obj.basicStat),
@@ -89,22 +75,7 @@ object JsonFormat {
     override def read(json: JsValue): Circle = {
       Try (CircleFactory(buildFormat.read(json))).getOrElse(throw new Exception("The json format is not correct" +  json))
     }
-  }*/
-
-  /*implicit object WeaponSetFormat extends RootJsonFormat[WeaponSet] {
-    override def read(json: JsValue): WeaponSet = {
-      println(json.asJsObject.fields(Equipment.Type).toString())
-      json.asJsObject.fields(Equipment.Type).toString() match {
-        case Weapon.Sword => swordFormat.read(json)
-      }
-    }
-
-    override def write(obj: PrimaryWeapon): JsValue = {
-      obj match {
-        case s: Sword => swordFormat.write(s)
-      }
-    }
-  }*/
+  }
 
   implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat2(Stuff.apply)
   implicit val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)

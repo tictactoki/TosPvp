@@ -33,26 +33,6 @@ case class Weapon(override val _id: Option[String] = KeyGenerator.createNewKeyAs
                   override val `type`: String
                  ) extends WeaponSet
 
-/*object PrimaryWeapon {
-
-  implicit object PrimaryWeaponHandler extends BSONHandler[BSONDocument, PrimaryWeapon] {
-    override def write(pw: PrimaryWeapon): BSONDocument = pw match {
-      case s:Sword => Sword.swordHandler.write(s)
-      case _ => throw new Exception("Fail on primary weapon writer")
-    }
-
-    override def read(bson: BSONDocument): PrimaryWeapon = {
-      bson.getAs[String](Equipment.Type) match {
-        case Some(Weapon.Sword) => Sword.swordHandler.read(bson)
-        case _ => throw new Exception("Fail on primary weapon reader")
-      }
-    }
-  }
-
-
-}*/
-
-
 object Weapon {
   implicit val weaponHandler = Macros.handler[Weapon]
 }

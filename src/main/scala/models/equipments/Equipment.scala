@@ -10,8 +10,6 @@ import reactivemongo.bson._
 
 trait Equipment {
 
-
-
   val _id: Option[String] = KeyGenerator.createNewKeyAsString
   // equipment type like boots or gloves, necessary for json or slash stab for weapon
   val `type`: String
@@ -32,8 +30,7 @@ object Equipment {
     override def read(bson: BSONDocument): Equipment = bson.getAs[String](ConstantsFields.TypeName) match {
       case Some(ConstantsFields.Weapon) => Weapon.weaponHandler.read(bson)
       case Some(ConstantsFields.Armor) => Armor.armorHandler.read(bson)
-      case Some(other) => throw new Exception("other: " + other)
-      case None => callBackException
+      case Some(_) | None => callBackException
     }
   }
 
