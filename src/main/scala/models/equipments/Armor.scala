@@ -8,83 +8,18 @@ import utils.{ConstantsFields, KeyGenerator}
   * Created by stephane on 15/02/2017.
   */
 
-sealed trait Armor extends Equipment {
-  // cloth, leather, plate, ghost
-  val category: String
-}
 
-case class Boots(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+case class Armor(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+                 override val typeName: String = ConstantsFields.Armor,
                  override val name: String,
-                 override val category: String,
                  override val mainStat: MainStat = MainStat(),
                  override val offensiveStat: OffensiveStat = OffensiveStat(),
                  override val defensiveStat: DefensiveStat = DefensiveStat(),
                  override val basicStat: BasicStat = BasicStat(),
-                 override val `type`: String = ConstantsFields.Boots) extends Armor
+                 // cloth, leather, plate, ghost
+                 override val `type`: String) extends Equipment
 
-object Boots {
-  implicit val bootsHandler = Macros.handler[Boots]
+
+object Armor {
+  implicit val armorHandler = Macros.handler[Armor]
 }
-
-case class Gloves(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
-                  override val name: String,
-                  override val category: String,
-                  override val mainStat: MainStat = MainStat(),
-                  override val offensiveStat: OffensiveStat = OffensiveStat(),
-                  override val defensiveStat: DefensiveStat = DefensiveStat(),
-                  override val basicStat: BasicStat = BasicStat(),
-                  override val `type`: String = ConstantsFields.Gloves) extends Armor
-
-object Gloves {
-  implicit val glovesHandler = Macros.handler[Gloves]
-}
-
-case class Pants(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
-                 override val name: String,
-                 override val category: String,
-                 override val mainStat: MainStat = MainStat(),
-                 override val offensiveStat: OffensiveStat = OffensiveStat(),
-                 override val defensiveStat: DefensiveStat = DefensiveStat(),
-                 override val basicStat: BasicStat = BasicStat(),
-                 override val `type`: String = ConstantsFields.Pants) extends Armor
-
-object Pants
-
-trait Shirt extends Equipment
-
-object Shirt
-
-
-trait Armband extends Equipment
-
-object Armband
-
-trait Artefact extends Equipment
-
-object Artefact
-
-trait Charm extends Equipment
-
-object Charm
-
-trait Costume extends Equipment
-
-object Costume
-
-trait Hat extends Equipment
-
-case object Hat {
-
-  final val BearEyemask = "BearEyeMask"
-  final val BigLionmask = "BigLionMask"
-
-
-}
-
-trait Necklace extends Equipment
-
-object Necklace
-
-trait Ring extends Equipment
-
-object Ring

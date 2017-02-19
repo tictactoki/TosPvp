@@ -22,7 +22,28 @@ object JsonFormat {
   implicit val defensiveStatFormat: RootJsonFormat[DefensiveStat] = jsonFormat6(DefensiveStat.apply)
   implicit val basicStatFormat: RootJsonFormat[BasicStat] = jsonFormat6(BasicStat.apply)
   implicit val mainStatFormat: RootJsonFormat[MainStat] = jsonFormat5(MainStat.apply)
-  val weaponFormat: RootJsonFormat[Weapon] = jsonFormat7(Weapon.apply)
+  implicit val armorFormat: RootJsonFormat[Armor] = jsonFormat8(Armor.apply)
+  val weaponFormat: RootJsonFormat[Weapon] = jsonFormat8(Weapon.apply)
+
+  implicit object EquipmentFormat extends RootJsonFormat[Equipment] {
+
+    protected def apply(typeName: String, jsValue: JsValue): Equipment = typeName match {
+      case ConstantsFields.Weapon => WeaponFormat.read(jsValue)
+      case ConstantsFields.Armor => armorFormat.read(jsValue)
+      case _ => Equipment.callBackException
+    }
+
+    override def read(json: JsValue): Equipment = json.asJsObject.fields(ConstantsFields.TypeName) match {
+      case JsString(value) => EquipmentFormat(value,json)
+      case _ => Equipment.callBackException
+    }
+
+    override def write(obj: Equipment): JsValue = obj match {
+      case wp: Weapon => WeaponFormat.write(wp)
+      case arm: Armor => armorFormat.write(arm)
+      case _ => Equipment.callBackException
+    }
+  }
 
   implicit object WeaponFormat extends RootJsonFormat[Weapon] {
     override def write(obj: Weapon): JsValue = {
@@ -85,6 +106,6 @@ object JsonFormat {
     }
   }*/
 
-  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat1(Stuff.apply)
+  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat2(Stuff.apply)
   implicit val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
 }

@@ -24,6 +24,7 @@ sealed abstract class WeaponSet extends Equipment {
 }
 
 case class Weapon(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
+                  override val typeName: String = ConstantsFields.Weapon,
                   override val name: String,
                   override val mainStat: MainStat = MainStat(),
                   override val offensiveStat: OffensiveStat = OffensiveStat(),
@@ -51,50 +52,7 @@ case class Weapon(override val _id: Option[String] = KeyGenerator.createNewKeyAs
 
 }*/
 
-object WeaponSet {
-  //implicit val
-}
-
 
 object Weapon {
   implicit val weaponHandler = Macros.handler[Weapon]
 }
-
-
-/*case class Sword(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
-                 override val name: String,
-                 override val mainStat: MainStat = MainStat(),
-                 override val offensiveStat: OffensiveStat = OffensiveStat(),
-                 override val defensiveStat: DefensiveStat = DefensiveStat(),
-                 override val basicStat: BasicStat = BasicStat(),
-                 override val twoHanded: Boolean = false,
-                 override val `type`: String = Weapon.Sword,
-                 override val category: String = WeaponSet.Slash
-                ) extends PrimaryWeapon
-
-object Sword {
-  implicit val swordHandler = Macros.handler[Sword]
-}
-
-case class Dagger(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
-                   override val name: String,
-                  override val mainStat: MainStat,
-                  override val offensiveStat: OffensiveStat,
-                  override val defensiveStat: DefensiveStat,
-                  override val basicStat: BasicStat,
-                  override val twoHanded: Boolean = false,
-                  override val `type`: String = Weapon.Dagger,
-                  override val category: String = WeaponSet.Stab) extends SecondaryWeapon
-
-case class Shield(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,
-                  override val name: String,
-                  override val mainStat: MainStat,
-                  override val offensiveStat: OffensiveStat,
-                  override val defensiveStat: DefensiveStat,
-                  override val basicStat: BasicStat,
-                  override val twoHanded: Boolean = false,
-                  override val `type`: String = Weapon.Shield) extends SecondaryWeapon
-
-object Shield {
-  implicit val shieldHandler = Macros.handler[Shield]
-}*/

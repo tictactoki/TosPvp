@@ -11,6 +11,7 @@ object ConstantsFields {
   final val CircleName = "circleName"
   final val Stuff = "stuff"
 
+  final val TypeName = "typeName"
   final val Type = "type"
   final val Name = "name"
   final val MainStat = "mainStat"
@@ -20,6 +21,7 @@ object ConstantsFields {
 
   // constant for subclasses
   final val Weapon = "Weapon"
+  final val Armor = "Armor"
   final val Boots = "Boots"
   final val Gloves = "Gloves"
   final val Pants = "Pants"
@@ -58,5 +60,11 @@ object ConstantsFields {
   final val Hit = "Hit"
   final val Magic = "Magic"
   final val Neutral = "Neutral"
+
+  // armor set type
+  final val Cloth = "Cloth"
+  final val Leather = "Leather"
+  final val Plate = "Plate"
+  final val Ghost = "Ghost"
 
 }

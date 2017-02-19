@@ -1,7 +1,7 @@
 package models.equipments
 
-import _root_.utils.KeyGenerator
-import models.stats.{DefensiveStat, BasicStat, OffensiveStat, MainStat}
+import _root_.utils.{ConstantsFields, KeyGenerator}
+import models.stats.{BasicStat, DefensiveStat, MainStat, OffensiveStat}
 import reactivemongo.bson._
 
 /**
@@ -11,16 +11,38 @@ import reactivemongo.bson._
 trait Equipment {
 
 
-  // equipment type like boots or gloves, necessary for json
+
   val _id: Option[String] = KeyGenerator.createNewKeyAsString
+  // equipment type like boots or gloves, necessary for json or slash stab for weapon
   val `type`: String
   val name: String
   val mainStat: MainStat = MainStat()
   val offensiveStat: OffensiveStat = OffensiveStat()
   val basicStat: BasicStat = BasicStat()
   val defensiveStat: DefensiveStat = DefensiveStat()
-
+  // armor or weapon
+  val typeName: String
 }
 
+object Equipment {
 
+  val callBackException = throw new Exception("This type of equipment doesn't exist")
+
+  implicit object EquipmentReader extends BSONDocumentReader[Equipment] {
+    override def read(bson: BSONDocument): Equipment = bson.getAs[String](ConstantsFields.TypeName) match {
+      case Some(ConstantsFields.Weapon) => Weapon.weaponHandler.read(bson)
+      case Some(ConstantsFields.Armor) => Armor.armorHandler.read(bson)
+      case Some(other) => throw new Exception("other: " + other)
+      case None => callBackException
+    }
+  }
+
+  implicit object EquipmentWriter extends BSONDocumentWriter[Equipment] {
+    override def write(equipment: Equipment): BSONDocument = equipment match {
+      case wp: Weapon => Weapon.weaponHandler.write(wp)
+      case arm: Armor => Armor.armorHandler.write(arm)
+      case _ => callBackException
+    }
+  }
+}
 
