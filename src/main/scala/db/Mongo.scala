@@ -103,6 +103,15 @@ object MongoCRUDController {
   def insertEquipment(equipment: Equipment) = insert[Equipment](Equipments,equipment)
   def insertStat(stat: MainStat) = insert[MainStat](Stats,stat)
 
+  // Get data
+  def getBuild(query: BSONDocument) = get[Build](Builds,query)
+  def getStat(query: BSONDocument) = get[MainStat](Stats,query)
+  def getEquipment(query: BSONDocument) = get[Equipment](Equipments,query)
+
+  def getBuildById(id: String) = getBuild(queryId(id))
+  def getStatById(id: String) = getStat(queryId(id))
+  def getEquipmentById(id: String) = getEquipment(queryId(id))
+
 }
 
 
