@@ -16,6 +16,15 @@ Technologies
 
 [Scala](https://www.scala-lang.org/)
 
+TODO
+====
+
+1) Use scala test
+2) Get all data from tosbase (or create files with all data to store them in database)
+3) Create specific queries
+4) Add specific get/post routes
+5) Create API Id for users
+
 
 Getting started
 ===============
