@@ -77,6 +77,6 @@ object JsonFormat {
     }
   }
 
-  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat2(Stuff.apply)
+  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat9(Stuff.apply)
   implicit val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
 }

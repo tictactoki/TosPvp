@@ -55,7 +55,7 @@ object MongoCRUDController {
   import MongoCollection._
 
   protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id-> id)
-  def query (fieldName: String, value: String) = BSONDocument(fieldName -> value)
+  val query =  (fieldName: String, value: String) => BSONDocument(fieldName -> value)
 
   protected def failHandler[T]: Cursor.ErrorHandler[List[T]] = {
     (last: List[T], error: Throwable) =>

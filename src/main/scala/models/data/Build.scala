@@ -17,15 +17,15 @@ import spray.json.DefaultJsonProtocol._
 
 
 
-case class Stuff(/*hat: Option[Hat] = None,
-                 charm: Option[Charm] = None,
-                 necklace: Option[Necklace] = None,
-                 rings: List[Ring] = Nil,*/
+case class Stuff(hat: Option[Armor] = None,
+                 charm: Option[Armor] = None,
+                 necklace: Option[Armor] = None,
+                 rings: List[Armor] = Nil,
                  armor: Option[Armor] = None,
-                 firstArm: Option[Weapon] = None/*,
-                 secondaryArm: Option[Secondary] = None,
-                 costume: Option[Costume] = None,
-                 armband: Option[Armband] = None*/
+                 firstArm: Option[Weapon] = None,
+                 secondaryArm: Option[Weapon] = None,
+                 costume: Option[Armor] = None,
+                 armband: Option[Armor] = None
                 ) {
 
   def getTotalEvasion: Int = 0
@@ -35,7 +35,6 @@ case class Stuff(/*hat: Option[Hat] = None,
 
 }
 
-case class ArmorSet(shirt: Option[Armor], pants: Option[Armor], boots: Option[Armor], gloves: Option[Armor])
 
 case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuff: Stuff = new Stuff())
 

@@ -24,7 +24,7 @@ sealed trait Circle {
   protected val buffLimit: Int
   protected val blockMultiplier = 1
 
-  val (basicStat,defensiveStat,offensiveStat) = (getBasicStat,getDefensiveStat, getOffensiveStat)
+  lazy val (basicStat,defensiveStat,offensiveStat) = (getBasicStat,getDefensiveStat, getOffensiveStat)
 
   protected def getDefensiveStat = DefensiveStat(getPhysicalDefense, getMagicDefense, getEvasion, getBlock.toLong)
 
@@ -34,7 +34,7 @@ sealed trait Circle {
 
   protected def getAoeRatio(weapon: Option[Weapon] = None): Int = aoeRatio + weapon.map(_.offensiveStat.aoeAttackRatio).getOrElse(0)
 
-  protected def getHP = (85 * build.mainStat.con + 17 * HPMultiplier * (build.level - 1))
+  protected def getHP = (85 * build.mainStat.con) + (17 * HPMultiplier * (build.level - 1))
 
   protected def getSP = (13 * build.mainStat.spr + 6.7 * SPMultiplier * (build.level - 1))
 

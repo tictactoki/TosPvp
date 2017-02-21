@@ -42,7 +42,7 @@ object WebServer extends BuildRoute with EquipmentRoute with App {
   val weapon = new Weapon(name = "test", `type` = ConstantsFields.Sword)
   val armor = new Armor(name = "test", `type` = ConstantsFields.Cloth)
 
-  val stuff = new Stuff(Some(armor), Some(weapon))
+  val stuff = new Stuff(Some(armor), firstArm = Some(weapon))
 
 
   val user = User("test")
