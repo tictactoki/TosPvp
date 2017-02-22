@@ -74,6 +74,10 @@ object PersistentBuild extends PersistenceQuery[PersistentBuild,Build] {
 
     }
   }
+
+
+
+
 }
 
 object PersistentStuff extends PersistenceQuery[PersistentStuff,Stuff] {
@@ -90,11 +94,30 @@ object PersistentStuff extends PersistenceQuery[PersistentStuff,Stuff] {
   override def getAll(query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[PersistentStuff]): Future[List[Stuff]] = {
     for {
       persistentStuffs <- MongoCRUD.getAllStuffs
+      stuffs <- persistentStuffs.map(getStuff(_)(getEquipement))
     } yield {
 
     }
   }
 
+  def getEquipement(equipment: Option[String]) = {
+    MongoCRUD.getEquipmentById(equipment.getOrElse(""))
+  }
+
+
+  def getStuff(s : PersistentStuff)(f: Option[String] => Future[Option[Equipment]]) = {
+    val ff = List(f(s.hat),
+      f(s.charm),
+      f(s.necklace),
+      Future.sequence(s.rings.map(r => f(Some(r)))),
+      f(s.armor),
+      f(s.firstArm),
+      f(s.secondaryArm),
+      f(s.costume),
+      f(s.armband)
+      )
+    Future.sequence(ff)
+  }
 
 
 }
