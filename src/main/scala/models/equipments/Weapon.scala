@@ -20,7 +20,7 @@ sealed abstract class WeaponSet extends Equipment {
   }
 
 
-  val (category: Option[String], twoHanded: Boolean, primary: Boolean, secondary: Boolean) = init
+  lazy val (category: Option[String], twoHanded: Boolean, primary: Boolean, secondary: Boolean) = init
 }
 
 case class Weapon(override val _id: Option[String] = KeyGenerator.createNewKeyAsString,

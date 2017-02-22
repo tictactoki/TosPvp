@@ -48,9 +48,6 @@ object WebServer extends BuildRoute with EquipmentRoute with App {
   val user = User("test")
   val build = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
   val circle = CircleFactory(build)
-  MongoCRUDController.insertBuild(build)
-  MongoCRUDController.insertEquipment(armor)
-  MongoCRUDController.insertEquipment(weapon)
   //val db = MongoConnection.getCollection(MongoCollection.Builds)
 
   val route =

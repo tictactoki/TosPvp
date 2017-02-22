@@ -2,7 +2,7 @@ package db
 
 import com.typesafe.config.ConfigFactory
 import models.User
-import models.data.Build
+import models.data.{PersistentStuff, PersistentBuild, Build}
 import models.equipments.Equipment
 import models.equipments.Equipment._
 import models.stats.MainStat
@@ -93,10 +93,11 @@ object MongoCRUDController {
   protected def delete[T](collectionName: String, id: String) = getCollection(collectionName).flatMap(_.remove(queryId(id)))
 
   // Get All data from model
-  def getAllBuilds = getAll[Build](Builds,BSONDocument())
+  protected[PersistentBuild] def getAllBuilds = getAll[PersistentBuild](Builds,BSONDocument())
   def getAllUsers = getAll[User](Users,BSONDocument())
   def getAllStats = getAll[MainStat](Stats,BSONDocument())
   def getAllEquipments = getAll[Equipment](Equipments, BSONDocument())
+  protected[PersistentStuff] def getAllStuffs = getAll[PersistentStuff](Stuffs, BSONDocument())
 
 
   // Insert data on collections
@@ -117,6 +118,9 @@ object MongoCRUDController {
   val getStatById = (id: String) => getStat(queryId(id))
   val getEquipmentById = (id: String) => getEquipment(queryId(id))
 
+
+
+
 }
 
 
@@ -124,6 +128,7 @@ object MongoCollection {
 
   // Build created by users
   final val Builds = "builds"
+  final val Stuffs = "stuffs"
   // Only main stats
   final val Stats = "stats"
   // Every equipments
