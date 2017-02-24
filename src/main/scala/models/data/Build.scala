@@ -5,16 +5,16 @@ package models.data
   * Here we don't save this model (only build), it's just for using some computation of tos formula
   */
 
-import _root_.utils.KeyGenerator
+import _root_.utils.{ConstantsFields, KeyGenerator}
 import models.equipments._
 import models.persistence.PersistenceQuery
 import models.stats.MainStat
 import reactivemongo.api.commands.{WriteResult, UpdateWriteResult}
 import reactivemongo.bson._
 import spray.json.DefaultJsonProtocol._
-import db.{ MongoCRUDController => MongoCRUD }
+import db.{MongoCRUDController => MongoCRUD, MongoCollection}
 import db.MongoCollection._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
@@ -57,7 +57,11 @@ case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circle
 case class PersistentBuild(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, persistentStuff: PersistentStuff)
 
 object PersistentBuild extends PersistenceQuery[PersistentBuild,Build] {
-  implicit val persistentBuildHandler = Macros.handler[PersistentBuild]
+  //implicit val persistentBuildHandler = Macros.handler[PersistentBuild]
+  implicit val psr = Macros.reader[PersistentStuff]
+  implicit val psw = Macros.writer[PersistentStuff]
+  implicit val persistentBuildReader = Macros.reader[PersistentBuild]
+  implicit val persistentBuildWriter = Macros.writer[PersistentBuild]
 
   override def insert(data: PersistentBuild)(implicit BSONDocumentWriter: BSONDocumentWriter[PersistentBuild]): Future[WriteResult] = ???
 
@@ -67,21 +71,40 @@ object PersistentBuild extends PersistenceQuery[PersistentBuild,Build] {
 
   override def getById(id: String)(implicit BSONDocumentReader: BSONDocumentReader[PersistentBuild]): Future[Option[Build]] = ???
 
-  override def getAll(query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[PersistentBuild]): Future[List[Build]] = {
+  override def getAll(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[PersistentBuild]): Future[List[Build]] = {
     for {
       persistentBuilds <- MongoCRUD.getAllBuilds
+      l <- getBuild(persistentBuilds)
     } yield {
-
+      l
     }
   }
 
+
+  implicit def fb(p: PersistentBuild) = {
+    PersistentStuff.persistentStuffToStuff(p.persistentStuff).map { s =>
+      Build(p._id,p.circleName,p.level,p.mainStat,s)
+    }
+  }
+
+  def getBuild(l: List[PersistentBuild])(implicit f: PersistentBuild => Future[Build]) = {
+    Future.sequence(l.map(f))
+  }
 
 
 
 }
 
 object PersistentStuff extends PersistenceQuery[PersistentStuff,Stuff] {
-  implicit val persistentStuffHandler = Macros.handler[PersistentStuff]
+  //implicit val persistentStuffHandler = Macros.handler[PersistentStuff]
+  implicit val psr = Macros.reader[PersistentStuff]
+  implicit val psw = Macros.writer[PersistentStuff]
+
+  /*implicit object PersistentStuffReader extends BSONReader[BSONDocument, PersistentStuff] {
+    override def read(bson: BSONDocument): PersistentStuff = {
+      persistentStuffHandler.read(bson)
+    }
+  }*/
 
   override def insert(data: PersistentStuff)(implicit BSONDocumentWriter: BSONDocumentWriter[PersistentStuff]): Future[WriteResult] = ???
 
@@ -94,29 +117,51 @@ object PersistentStuff extends PersistenceQuery[PersistentStuff,Stuff] {
   override def getAll(query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[PersistentStuff]): Future[List[Stuff]] = {
     for {
       persistentStuffs <- MongoCRUD.getAllStuffs
-      stuffs <- persistentStuffs.map(getStuff(_)(getEquipement))
+      stuffs <- Future.sequence(persistentStuffs.map(ps => ps: Future[Stuff]))
     } yield {
-
+      stuffs
     }
   }
 
-  def getEquipement(equipment: Option[String]) = {
+  implicit def persistentStuffToStuff(p: PersistentStuff): Future[Stuff] = {
+    for {
+      //head <- p.hat.map(MongoCRUD.getById[Armor](MongoCollection.Equipments, _))
+      head <- MongoCRUD.getById[Armor](MongoCollection.Equipments, p.hat.getOrElse(""))
+      arm <- MongoCRUD.getById[Armor](MongoCollection.Equipments, p.armor.getOrElse(""))
+      weapon <- MongoCRUD.getById[Weapon](MongoCollection.Equipments, p.firstArm.getOrElse(""))
+    } yield {
+      new Stuff(hat = head, armor = head, firstArm = weapon)
+    }
+  }
+
+  implicit def getEquipment(equipment: Option[String]) = {
     MongoCRUD.getEquipmentById(equipment.getOrElse(""))
   }
 
+  def getWeapon(e: Equipment) = e.typeName match {
+    case ConstantsFields.Weapon => new Weapon(e)
+    case _ => throw new Exception("Not a weapon")
+  }
 
-  def getStuff(s : PersistentStuff)(f: Option[String] => Future[Option[Equipment]]) = {
-    val ff = List(f(s.hat),
-      f(s.charm),
-      f(s.necklace),
-      Future.sequence(s.rings.map(r => f(Some(r)))),
-      f(s.armor),
-      f(s.firstArm),
-      f(s.secondaryArm),
-      f(s.costume),
-      f(s.armband)
-      )
-    Future.sequence(ff)
+  def getArmor(e:Equipment) = e.typeName match {
+    case ConstantsFields.Armor=> new Armor(e)
+    case _ => throw new Exception("Not an armor")
+  }
+
+  def test(s: PersistentStuff)(f: Option[String] => Future[Option[Equipment]]) = {
+    for {
+      oFirstArm <- f(s.firstArm)
+      armor <- f(s.armor)
+    } yield {
+      val w = getWeapon(oFirstArm.get)
+      val ar = getArmor(armor.get)
+      new Stuff(firstArm = Some(w),armor = Some(ar))
+    }
+  }
+
+
+  def getStuff(s : List[PersistentStuff])(f: PersistentStuff => Future[Stuff]) = {
+    Future.sequence(s.map(f))
   }
 
 

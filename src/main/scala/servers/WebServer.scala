@@ -17,7 +17,7 @@ import utils.ConstantsFields
 
 import scala.concurrent.Future
 import scala.io.StdIn
-import models.data.{Build, Stuff}
+import models.data.{PersistentBuild, PersistentStuff, Build, Stuff}
 import models.stats.MainStat
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import formats.JsonFormat._
@@ -44,10 +44,16 @@ object WebServer extends BuildRoute with EquipmentRoute with App {
 
   val stuff = new Stuff(Some(armor), firstArm = Some(weapon))
 
+  val ps = PersistentStuff(armor = Some("58b00ee0d10000d100e2da31"), firstArm = Some("58b00ee0d10000d100e2da2f"))
+  //MongoCRUDController.insertPS(ps)
 
   val user = User("test")
-  val build = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
-  val circle = CircleFactory(build)
+
+  val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
+  val pb = PersistentBuild(circleName = b.circleName, level = b.level, mainStat = b.mainStat, persistentStuff = ps)
+  val circle = CircleFactory(b)
+
+
   //val db = MongoConnection.getCollection(MongoCollection.Builds)
 
   val route =

@@ -31,7 +31,13 @@ case class Weapon(override val _id: Option[String] = KeyGenerator.createNewKeyAs
                   override val defensiveStat: DefensiveStat = DefensiveStat(),
                   override val basicStat: BasicStat = BasicStat(),
                   override val `type`: String
-                 ) extends WeaponSet
+                 ) extends WeaponSet {
+
+  def this(e: Equipment) {
+    this(e._id,e.typeName,e.name,e.mainStat,e.offensiveStat,e.defensiveStat,e.basicStat,e.`type`)
+  }
+
+}
 
 object Weapon {
   implicit val weaponHandler = Macros.handler[Weapon]

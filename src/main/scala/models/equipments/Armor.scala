@@ -17,7 +17,13 @@ case class Armor(override val _id: Option[String] = KeyGenerator.createNewKeyAsS
                  override val defensiveStat: DefensiveStat = DefensiveStat(),
                  override val basicStat: BasicStat = BasicStat(),
                  // cloth, leather, plate, ghost
-                 override val `type`: String) extends Equipment
+                 override val `type`: String) extends Equipment {
+
+  def this(e: Equipment) {
+    this(e._id,e.typeName,e.name,e.mainStat,e.offensiveStat,e.defensiveStat,e.basicStat,e.`type`)
+  }
+
+}
 
 
 object Armor {

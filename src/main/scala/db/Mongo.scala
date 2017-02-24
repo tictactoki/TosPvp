@@ -23,7 +23,7 @@ object MongoConnection {
 
   import MongoCollection._
 
-  protected lazy val collections = List(Builds, Stats, Equipments, Users)
+  protected lazy val collections = List(Builds, Stats, Equipments, Users, Stuffs)
 
   protected lazy val mongoCollections: mutable.HashMap[String, Future[BSONCollection]] = initCollection(collections)
   protected lazy val db = initConnection
@@ -81,7 +81,7 @@ object MongoCRUDController {
     }
   }
 
-  protected def getById[T](collectionName: String, id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = get[T](collectionName,queryId(id))
+  def getById[T](collectionName: String, id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = get[T](collectionName,queryId(id))
 
 
   protected def update[T](collectionName: String, query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
@@ -93,17 +93,18 @@ object MongoCRUDController {
   protected def delete[T](collectionName: String, id: String) = getCollection(collectionName).flatMap(_.remove(queryId(id)))
 
   // Get All data from model
-  protected[PersistentBuild] def getAllBuilds = getAll[PersistentBuild](Builds,BSONDocument())
+  def getAllBuilds = getAll[PersistentBuild](Builds,BSONDocument())
   def getAllUsers = getAll[User](Users,BSONDocument())
   def getAllStats = getAll[MainStat](Stats,BSONDocument())
   def getAllEquipments = getAll[Equipment](Equipments, BSONDocument())
-  protected[PersistentStuff] def getAllStuffs = getAll[PersistentStuff](Stuffs, BSONDocument())
+  def getAllStuffs = getAll[PersistentStuff](Stuffs, BSONDocument())
 
 
   // Insert data on collections
-  def insertBuild(build: Build) = insert[Build](Builds,build)
+  def insertBuild(build: PersistentBuild) = insert[PersistentBuild](Builds,build)
   def insertEquipment(equipment: Equipment) = insert[Equipment](Equipments,equipment)
   def insertStat(stat: MainStat) = insert[MainStat](Stats,stat)
+  def insertPS(stuff: PersistentStuff) = insert[PersistentStuff](Stuffs,stuff)
 
   // Get data
   def getBuild(query: BSONDocument) = get[Build](Builds,query)
