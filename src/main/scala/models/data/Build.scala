@@ -7,7 +7,7 @@ package models.data
 
 import _root_.utils.{ConstantsFields, KeyGenerator}
 import models.equipments._
-import models.persistence.{PersistenceTransformer, PersistenceQuery}
+import models.persistence.{PersistenceTransformer}
 import models.stats.MainStat
 import reactivemongo.api.commands.{WriteResult, UpdateWriteResult}
 import reactivemongo.bson._
@@ -28,8 +28,8 @@ case class Stuff(hat: Option[Armor] = None,
                  necklace: Option[Armor] = None,
                  rings: List[Armor] = Nil,
                  armor: Option[Armor] = None,
-                 firstArm: Option[Weapon] = None,
-                 secondaryArm: Option[Weapon] = None,
+                 firstHand: Option[Weapon] = None,
+                 secondaryHand: Option[Weapon] = None,
                  costume: Option[Armor] = None,
                  armband: Option[Armor] = None
                 ) {
@@ -41,35 +41,7 @@ case class Stuff(hat: Option[Armor] = None,
 
 }
 
-case class PersistentStuff(_id: Option[String] = KeyGenerator.createNewKeyAsString,
-                            hat: Option[String] = None,
-                           charm: Option[String] = None,
-                           necklace: Option[String] = None,
-                           rings: List[String] = Nil,
-                           armor: Option[String] = None,
-                           firstArm: Option[String] = None,
-                           secondaryArm: Option[String] = None,
-                           costume: Option[String] = None,
-                           armband: Option[String] = None)
-
 case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuff: Stuff = new Stuff())
-
-case class PersistentBuild(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, persistentStuff: PersistentStuff)
-
-object PersistentBuild extends PersistenceTransformer[Build,PersistentBuild] {
-  implicit val persistentStuffHandler = Macros.handler[PersistentStuff]
-  implicit val persistentBuildHandler = Macros.handler[PersistentBuild]
-
-  override def createRealTypeFromPersistentType(ps: PersistentBuild): Future[Build] = ???
-
-  override def createRealTypeFromPersistentType(ps: List[PersistentBuild]): Future[List[Build]] = ???
-}
-
-object PersistentStuff extends PersistenceTransformer[Stuff,PersistentStuff] {
-  override def createRealTypeFromPersistentType(ps: PersistentStuff): Future[Stuff] = ???
-
-  override def createRealTypeFromPersistentType(ps: List[PersistentStuff]): Future[List[Stuff]] = ???
-}
 
 object Stuff {
   implicit val stuffHandler = Macros.handler[Stuff]

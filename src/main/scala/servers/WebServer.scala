@@ -1,39 +1,24 @@
 package servers
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
-import akka.stream.ActorMaterializer
 import akka.http.scaladsl._
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
-import db.{MongoCRUDController, MongoCollection, MongoConnection}
+import akka.stream.ActorMaterializer
 import models.User
 import models.classes.CircleFactory
+import models.data.{Build, Stuff}
 import models.equipments.{Armor, Weapon}
-import models.equipments.Weapon._
-import reactivemongo.api.{Cursor, ReadPreference}
-import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.bson.{BSONDocument, BSONHandler, BSONObjectID, Macros}
+import models.routes.{BuildRoute, EquipmentRoute}
+import models.stats.MainStat
 import utils.ConstantsFields
 
-import scala.concurrent.Future
 import scala.io.StdIn
-import models.data.{PersistentBuild, PersistentStuff, Build, Stuff}
-import models.stats.MainStat
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import formats.JsonFormat._
-import models.User._
-import models.data.Build._
-import models.data.Stuff._
-import models.routes.{BuildRoute, EquipmentRoute}
-import spray.json.DefaultJsonProtocol._
-import spray.json._
 
 /**
   * Created by stephane on 08/02/2017.
   */
 object WebServer extends BuildRoute with EquipmentRoute with App {
-
-  import Build._
 
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
@@ -42,15 +27,11 @@ object WebServer extends BuildRoute with EquipmentRoute with App {
   val weapon = new Weapon(name = "test", `type` = ConstantsFields.Sword)
   val armor = new Armor(name = "test", `type` = ConstantsFields.Cloth)
 
-  val stuff = new Stuff(Some(armor), firstArm = Some(weapon))
-
-  val ps = PersistentStuff(armor = Some("58b00ee0d10000d100e2da31"), firstArm = Some("58b00ee0d10000d100e2da2f"))
-  //MongoCRUDController.insertPS(ps)
+  val stuff = new Stuff(Some(armor), firstHand = Some(weapon))
 
   val user = User("test")
 
   val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
-  val pb = PersistentBuild(circleName = b.circleName, level = b.level, mainStat = b.mainStat, persistentStuff = ps)
   val circle = CircleFactory(b)
 
 

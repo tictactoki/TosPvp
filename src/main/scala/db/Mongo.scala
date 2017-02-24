@@ -1,13 +1,8 @@
 package db
 
 import com.typesafe.config.ConfigFactory
-import models.User
-import models.data.{PersistentStuff, PersistentBuild, Build}
-import models.equipments.Equipment
-import models.equipments.Equipment._
-import models.stats.MainStat
-import reactivemongo.api.{Cursor, DefaultCursor, MongoDriver}
 import reactivemongo.api.collections.bson.BSONCollection
+import reactivemongo.api.{Cursor, MongoDriver}
 import reactivemongo.bson.{BSONDocument, BSONDocumentReader, BSONDocumentWriter}
 import utils.ConstantsFields
 

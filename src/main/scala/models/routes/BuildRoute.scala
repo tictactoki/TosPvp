@@ -1,14 +1,10 @@
 package models.routes
 
-import akka.http.scaladsl.server
-import akka.http.scaladsl.server.Directives._
-import db.MongoCRUDController
-import formats.JsonFormat._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import models.data.PersistentBuild
+import akka.http.scaladsl.server.Directives._
+import db.BuildController
+import formats.JsonFormat._
 import spray.json.DefaultJsonProtocol._
-import utils.ConstantsFields
-import MongoCRUDController._
 
 /**
   * Created by wong on 19/02/17.
@@ -29,7 +25,7 @@ trait BuildRoute {
         }
       }
     } ~ */get {
-      onSuccess(PersistentBuild.getAll()) { builds =>
+      onSuccess(BuildController.find()) { builds =>
         complete(builds)
       }
     }
