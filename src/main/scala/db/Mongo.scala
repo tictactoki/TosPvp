@@ -50,7 +50,49 @@ object MongoConnection {
 
 }
 
-object MongoCRUDController {
+trait MongoCrud[T] {
+  protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id-> id)
+  val query =  (fieldName: String, value: String) => BSONDocument(fieldName -> value)
+
+  val mainCollection: Future[BSONCollection]
+
+  protected def failHandler: Cursor.ErrorHandler[List[T]] = {
+    (last: List[T], error: Throwable) =>
+      if(last.isEmpty) {
+        Cursor.Cont(last)
+      }
+      else Cursor.Fail(error)
+  }
+
+  def insert(data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
+    mainCollection.flatMap(_.insert[T](data))
+  }
+
+  def find(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
+    mainCollection.flatMap { collection =>
+      collection.find(query).cursor[T]().collect[List](Int.MaxValue, failHandler)
+    }
+  }
+
+  def findOne(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
+    mainCollection.flatMap { collection =>
+      collection.find(query).one[T]
+    }
+  }
+
+  def findById(id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = findOne(queryId(id))
+
+
+  def update(query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
+    mainCollection.flatMap { collection =>
+      collection.update(query,data)
+    }
+  }
+
+  def delete(id: String) = mainCollection.flatMap(_.remove(queryId(id)))
+}
+
+/*object MongoCRUDController {
   import MongoConnection._
   import MongoCollection._
 
@@ -75,13 +117,13 @@ object MongoCRUDController {
     }
   }
 
-  protected def get[T](collectionName: String, query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
+  protected def find[T](collectionName: String, query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
     getCollection(collectionName).flatMap { collection =>
       collection.find(query).one[T]
     }
   }
 
-  def getById[T](collectionName: String, id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = get[T](collectionName,queryId(id))
+  protected def findById[T](collectionName: String, id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = find[T](collectionName,queryId(id))
 
 
   protected def update[T](collectionName: String, query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
@@ -93,7 +135,7 @@ object MongoCRUDController {
   protected def delete[T](collectionName: String, id: String) = getCollection(collectionName).flatMap(_.remove(queryId(id)))
 
   // Get All data from model
-  def getAllBuilds = getAll[PersistentBuild](Builds,BSONDocument())
+  /*def getAllBuilds = getAll[PersistentBuild](Builds,BSONDocument())
   def getAllUsers = getAll[User](Users,BSONDocument())
   def getAllStats = getAll[MainStat](Stats,BSONDocument())
   def getAllEquipments = getAll[Equipment](Equipments, BSONDocument())
@@ -107,9 +149,9 @@ object MongoCRUDController {
   def insertPS(stuff: PersistentStuff) = insert[PersistentStuff](Stuffs,stuff)
 
   // Get data
-  def getBuild(query: BSONDocument) = get[Build](Builds,query)
-  def getStat(query: BSONDocument) = get[MainStat](Stats,query)
-  def getEquipment(query: BSONDocument) = get[Equipment](Equipments,query)
+  def getBuild(query: BSONDocument) = find[Build](Builds,query)
+  def getStat(query: BSONDocument) = find[MainStat](Stats,query)
+  def getEquipment(query: BSONDocument) = find[Equipment](Equipments,query)
 
   def getBuilds(query: BSONDocument) = getAll[Build](Builds,query)
   def getStats(query: BSONDocument) = getAll[MainStat](Stats,query)
@@ -117,13 +159,13 @@ object MongoCRUDController {
 
   val getBuildById = (id: String) => getBuild(queryId(id))
   val getStatById = (id: String) => getStat(queryId(id))
-  val getEquipmentById = (id: String) => getEquipment(queryId(id))
+  val getEquipmentById = (id: String) => getEquipment(queryId(id))*/
 
 
 
 
 }
-
+*/
 
 object MongoCollection {
 

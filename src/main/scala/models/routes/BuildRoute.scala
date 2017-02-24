@@ -9,7 +9,6 @@ import models.data.PersistentBuild
 import spray.json.DefaultJsonProtocol._
 import utils.ConstantsFields
 import MongoCRUDController._
-import models.data.PersistentBuild.persistentBuildWriter
 
 /**
   * Created by wong on 19/02/17.
