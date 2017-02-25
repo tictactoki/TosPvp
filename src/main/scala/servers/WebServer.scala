@@ -5,6 +5,7 @@ import akka.http.scaladsl._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import db.{BuildController, EquipmentController}
 import models.User
 import models.classes.CircleFactory
 import models.data.{Build, Stuff}
@@ -33,18 +34,10 @@ object WebServer extends BuildRoute with EquipmentRoute with App {
 
   val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
   val circle = CircleFactory(b)
+  BuildController.insert(b)
+  EquipmentController.insert(List(armor,weapon))
 
-
-  //val db = MongoConnection.getCollection(MongoCollection.Builds)
-
-  val route =
-    path("hello") {
-      get {
-        complete {
-          HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Hello</h1>")
-        }
-      }
-    } ~ buildRoute ~ equipmentRoute
+  val route = buildRoute ~ equipmentRoute
 
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8090)

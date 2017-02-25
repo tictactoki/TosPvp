@@ -2,6 +2,7 @@ package db
 
 import com.typesafe.config.ConfigFactory
 import reactivemongo.api.collections.bson.BSONCollection
+import reactivemongo.api.commands.{MultiBulkWriteResult, UpdateWriteResult, WriteResult}
 import reactivemongo.api.{Cursor, MongoDriver}
 import reactivemongo.bson.{BSONDocument, BSONDocumentReader, BSONDocumentWriter}
 import utils.ConstantsFields
@@ -46,121 +47,50 @@ object MongoConnection {
 }
 
 trait MongoCrud[T] {
-  protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id-> id)
-  val query =  (fieldName: String, value: String) => BSONDocument(fieldName -> value)
+  protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id -> id)
 
-  val mainCollection: Future[BSONCollection]
+  protected val mainCollection: Future[BSONCollection]
 
   protected def failHandler: Cursor.ErrorHandler[List[T]] = {
     (last: List[T], error: Throwable) =>
-      if(last.isEmpty) {
+      if (last.isEmpty) {
         Cursor.Cont(last)
       }
       else Cursor.Fail(error)
   }
 
-  def insert(data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
+  def insert(data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]): Future[WriteResult] = {
     mainCollection.flatMap(_.insert[T](data))
   }
 
-  def find(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
+  def insert(data: List[T])(implicit bSONDocumentWriter: BSONDocumentWriter[T]): Future[MultiBulkWriteResult] = {
+    val stream = data.toStream.map(bSONDocumentWriter.write(_))
+    mainCollection.flatMap(_.bulkInsert(stream, ordered = true))
+  }
+
+  def find(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[T]): Future[List[T]] = {
     mainCollection.flatMap { collection =>
       collection.find(query).cursor[T]().collect[List](Int.MaxValue, failHandler)
     }
   }
 
-  def findOne(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
+  def findOne(query: BSONDocument = BSONDocument())(implicit BSONDocumentReader: BSONDocumentReader[T]): Future[Option[T]] = {
     mainCollection.flatMap { collection =>
       collection.find(query).one[T]
     }
   }
 
-  def findById(id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = findOne(queryId(id))
+  def findById(id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]): Future[Option[T]] = findOne(queryId(id))
 
 
-  def update(query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
+  def update(query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]): Future[UpdateWriteResult] = {
     mainCollection.flatMap { collection =>
-      collection.update(query,data)
+      collection.update(query, data)
     }
   }
 
-  def delete(id: String) = mainCollection.flatMap(_.remove(queryId(id)))
+  def delete(id: String): Future[WriteResult] = mainCollection.flatMap(_.remove(queryId(id)))
 }
-
-/*object MongoCRUDController {
-  import MongoConnection._
-  import MongoCollection._
-
-  protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id-> id)
-  val query =  (fieldName: String, value: String) => BSONDocument(fieldName -> value)
-
-  protected def failHandler[T]: Cursor.ErrorHandler[List[T]] = {
-    (last: List[T], error: Throwable) =>
-      if(last.isEmpty) {
-        Cursor.Cont(last)
-      }
-      else Cursor.Fail(error)
-  }
-
-  protected def insert[T](collectionName: String, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
-     getCollection(collectionName).flatMap(_.insert[T](data))
-  }
-
-  protected def getAll[T](collectionName: String, query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
-    getCollection(collectionName).flatMap { collection =>
-      collection.find(query).cursor[T]().collect[List](Int.MaxValue, failHandler[T])
-    }
-  }
-
-  protected def find[T](collectionName: String, query: BSONDocument)(implicit BSONDocumentReader: BSONDocumentReader[T]) = {
-    getCollection(collectionName).flatMap { collection =>
-      collection.find(query).one[T]
-    }
-  }
-
-  protected def findById[T](collectionName: String, id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]) = find[T](collectionName,queryId(id))
-
-
-  protected def update[T](collectionName: String, query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]) = {
-    getCollection(collectionName).flatMap { collection =>
-      collection.update(query,data)
-    }
-  }
-
-  protected def delete[T](collectionName: String, id: String) = getCollection(collectionName).flatMap(_.remove(queryId(id)))
-
-  // Get All data from model
-  /*def getAllBuilds = getAll[PersistentBuild](Builds,BSONDocument())
-  def getAllUsers = getAll[User](Users,BSONDocument())
-  def getAllStats = getAll[MainStat](Stats,BSONDocument())
-  def getAllEquipments = getAll[Equipment](Equipments, BSONDocument())
-  def getAllStuffs = getAll[PersistentStuff](Stuffs, BSONDocument())
-
-
-  // Insert data on collections
-  def insertBuild(build: PersistentBuild) = insert[PersistentBuild](Builds,build)
-  def insertEquipment(equipment: Equipment) = insert[Equipment](Equipments,equipment)
-  def insertStat(stat: MainStat) = insert[MainStat](Stats,stat)
-  def insertPS(stuff: PersistentStuff) = insert[PersistentStuff](Stuffs,stuff)
-
-  // Get data
-  def getBuild(query: BSONDocument) = find[Build](Builds,query)
-  def getStat(query: BSONDocument) = find[MainStat](Stats,query)
-  def getEquipment(query: BSONDocument) = find[Equipment](Equipments,query)
-
-  def getBuilds(query: BSONDocument) = getAll[Build](Builds,query)
-  def getStats(query: BSONDocument) = getAll[MainStat](Stats,query)
-  def getEquipments(query: BSONDocument) = getAll[Equipment](Equipments,query)
-
-  val getBuildById = (id: String) => getBuild(queryId(id))
-  val getStatById = (id: String) => getStat(queryId(id))
-  val getEquipmentById = (id: String) => getEquipment(queryId(id))*/
-
-
-
-
-}
-*/
 
 object MongoCollection {
 

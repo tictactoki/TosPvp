@@ -1,7 +1,7 @@
 package models.routes
 
 import akka.http.scaladsl.server.Directives._
-import db.{EquipmentController}
+import db.EquipmentController._
 import formats.JsonFormat.EquipmentFormat
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import spray.json.DefaultJsonProtocol._
@@ -14,12 +14,12 @@ trait EquipmentRoute {
   val equipmentRoute = path("equipments") {
     get {
         parameter("_id".as[String]) { id =>
-          onSuccess(EquipmentController.findById(id)) { equipment =>
+          onSuccess(findById(id)) { equipment =>
             complete(equipment)
           }
         }
       } ~ get {
-      onSuccess(EquipmentController.find()) { equipments =>
+      onSuccess(find()) { equipments =>
         complete(equipments)
       }
     }
