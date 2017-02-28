@@ -5,12 +5,13 @@ import akka.http.scaladsl._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import db.{BuildController, EquipmentController}
+import db.{StuffController, BuildController, EquipmentController}
+import formats.JsonFormat
 import models.User
 import models.classes.CircleFactory
 import models.data.{Build, Stuff}
 import models.equipments.{Armor, Weapon}
-import models.routes.{BuildRoute, EquipmentRoute}
+import models.routes.{StuffRoute, BuildRoute, EquipmentRoute}
 import models.stats.MainStat
 import utils.ConstantsFields
 
@@ -19,7 +20,7 @@ import scala.io.StdIn
 /**
   * Created by stephane on 08/02/2017.
   */
-object WebServer extends BuildRoute with EquipmentRoute with App {
+object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with StuffRoute with  App {
 
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
@@ -28,14 +29,12 @@ object WebServer extends BuildRoute with EquipmentRoute with App {
   val weapon = new Weapon(name = "test", `type` = ConstantsFields.Sword)
   val armor = new Armor(name = "test", `type` = ConstantsFields.Cloth)
 
-  val stuff = new Stuff(Some(armor), firstHand = Some(weapon))
+  val stuff = new Stuff(armor = Some(armor), firstHand = Some(weapon))
 
   val user = User("test")
 
-  val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuff = stuff)
+  val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuffId = stuff._id)
   val circle = CircleFactory(b)
-  BuildController.insert(b)
-  EquipmentController.insert(List(armor,weapon))
 
   val route = buildRoute ~ equipmentRoute
 

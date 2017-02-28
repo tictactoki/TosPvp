@@ -2,7 +2,7 @@ package db
 
 import db.MongoConnection._
 import _root_.db.MongoCollection._
-import models.data.Build
+import models.data.{Stuff, Build}
 import models.equipments.Equipment
 import models.stats.MainStat
 import reactivemongo.api.collections.bson.BSONCollection
@@ -22,4 +22,8 @@ object EquipmentController extends MongoCrud[Equipment] {
 
 object StatController extends MongoCrud[MainStat] {
   override val mainCollection: Future[BSONCollection] = getCollection(Stats)
+}
+
+object StuffController extends MongoCrud[Stuff] {
+  override protected val mainCollection: Future[BSONCollection] = getCollection(Stuffs)
 }

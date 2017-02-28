@@ -47,7 +47,7 @@ object MongoConnection {
 }
 
 trait MongoCrud[T] {
-  protected lazy val queryId = (id: String) => BSONDocument(ConstantsFields.Id -> id)
+  protected lazy val queryId = (id: Option[String]) => BSONDocument(ConstantsFields.Id -> id.getOrElse(""))
 
   protected val mainCollection: Future[BSONCollection]
 
@@ -60,7 +60,7 @@ trait MongoCrud[T] {
   }
 
   def insert(data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]): Future[WriteResult] = {
-    mainCollection.flatMap(_.insert[T](data))
+    mainCollection.flatMap{ c => c.insert[T](data) }
   }
 
   def insert(data: List[T])(implicit bSONDocumentWriter: BSONDocumentWriter[T]): Future[MultiBulkWriteResult] = {
@@ -80,7 +80,7 @@ trait MongoCrud[T] {
     }
   }
 
-  def findById(id: String)(implicit BSONDocumentReader: BSONDocumentReader[T]): Future[Option[T]] = findOne(queryId(id))
+  def findById(id: Option[String])(implicit BSONDocumentReader: BSONDocumentReader[T]): Future[Option[T]] = findOne(queryId(id))
 
 
   def update(query: BSONDocument, data: T)(implicit BSONDocumentWriter: BSONDocumentWriter[T]): Future[UpdateWriteResult] = {
@@ -89,7 +89,7 @@ trait MongoCrud[T] {
     }
   }
 
-  def delete(id: String): Future[WriteResult] = mainCollection.flatMap(_.remove(queryId(id)))
+  def delete(id: Option[String]): Future[WriteResult] = mainCollection.flatMap(_.remove(queryId(id)))
 }
 
 object MongoCollection {

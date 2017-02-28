@@ -24,7 +24,7 @@ TODO
 - Create specific queries
 - Add specific get/post routes
 - Create API Id for users
-
+- Add skills and attributes for circles
 
 Getting started
 ===============

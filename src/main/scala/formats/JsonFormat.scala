@@ -1,8 +1,9 @@
 package formats
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import models.User
 import models.classes.{CircleFactory, Circle}
-import models.data.{Stuff, Build}
+import models.data.{NestedBuild, Stuff, Build}
 import models.equipments._
 import models.stats.{OffensiveStat, DefensiveStat, BasicStat, MainStat}
 import spray.json.DefaultJsonProtocol._
@@ -14,7 +15,7 @@ import scala.util.Try
 /**
   * Created by stephane on 08/02/2017.
   */
-object JsonFormat {
+trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
 
 
   implicit val userFormat = jsonFormat1(User.apply)
@@ -77,6 +78,15 @@ object JsonFormat {
     }
   }
 
-  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat9(Stuff.apply)
-  implicit val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
+  implicit object BuildFormat extends RootJsonFormat[Build] {
+    override def read(json: JsValue): Build = {
+      buildFormat.read(json)
+    }
+
+    override def write(obj: Build): JsValue = buildFormat.write(obj)
+  }
+
+  implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat10(Stuff.apply)
+  val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
+  implicit val nestedBuildFormat = jsonFormat5(NestedBuild.apply)
 }

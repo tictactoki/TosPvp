@@ -5,17 +5,10 @@ package models.data
   * Here we don't save this model (only build), it's just for using some computation of tos formula
   */
 
-import _root_.utils.{ConstantsFields, KeyGenerator}
+import _root_.utils.KeyGenerator
 import models.equipments._
-import models.persistence.{PersistenceTransformer}
 import models.stats.MainStat
-import reactivemongo.api.commands.{WriteResult, UpdateWriteResult}
 import reactivemongo.bson._
-import spray.json.DefaultJsonProtocol._
-import db.{BuildController, MongoCollection}
-import db.MongoCollection._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 /**
   * Created by stephane on 10/02/2017.
@@ -23,7 +16,8 @@ import scala.concurrent.Future
 
 
 
-case class Stuff(hat: Option[Armor] = None,
+case class Stuff(_id: Option[String] = KeyGenerator.createNewKeyAsString,
+                  hat: Option[Armor] = None,
                  charm: Option[Armor] = None,
                  necklace: Option[Armor] = None,
                  rings: List[Armor] = Nil,
@@ -41,7 +35,16 @@ case class Stuff(hat: Option[Armor] = None,
 
 }
 
-case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuff: Stuff = new Stuff())
+case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuffId: Option[String] = None)
+case class NestedBuild private (_id: Option[String], circleName: String, level: Int, mainStat: MainStat, stuff: Option[Stuff] = None) {
+  def this(build: Build, stuff: Option[Stuff]) = {
+    this(build._id,build.circleName,build.level,build.mainStat, stuff)
+  }
+}
+/*
+object NestedBuild {
+  def apply(build: Build, stuff: Stuff) = new NestedBuild(build,stuff)
+}*/
 
 object Stuff {
   implicit val stuffHandler = Macros.handler[Stuff]
