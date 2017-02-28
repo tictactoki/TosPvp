@@ -11,39 +11,43 @@ import spray.json.DefaultJsonProtocol._
 import utils.ConstantsFields
 import utils.QueryHelpers._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
   * Created by wong on 19/02/17.
   */
 trait BuildRoute { that: JsonFormat =>
 
-  protected def getNestedBuild(build: Option[Build]) = {
+  protected def getNestedBuild(f: => Future[Option[Build]]) = {
+    for {
+      build <- f
+      stuff <- getStuffFromBuild(build)
+    } yield NestedBuild(build,stuff)
+  }
 
+  protected def getStuffFromBuild(build: Option[Build]) = StuffController.findById(build.flatMap(_.stuffId))
+  protected def getStuffFromBuild(build: Build) = StuffController.findById(build.stuffId)
+
+  protected def getNestedBuilds(f: => Future[List[Build]]) = {
+    for {
+      builds <- f
+      nestedBuilds <- Future.sequence(builds.map( b => NestedBuild(b,getStuffFromBuild(b))))
+    } yield {
+      nestedBuilds
+    }
   }
 
   val buildRoute = path("builds") {
     get {
       parameter('circleName.as[String]) { name =>
-        onSuccess(find(query(ConstantsFields.CircleName,name))) { build =>
-          complete(build)
-        }
+        complete(getNestedBuilds(find(query(ConstantsFields.CircleName,name))))
       }
     } ~ get {
       parameter('_id.as[String]) { id =>
-        complete {
-          val nestedBuild = for {
-            build <- findById(Some(id))
-            stuff <- StuffController.findById(build.flatMap(_.stuffId))
-          } yield {
-            new NestedBuild(build.getOrElse(throw new Exception("Build Not Found")),stuff)
-          }
-          nestedBuild
-        }
+        complete(getNestedBuild(findById(Some(id))))
       }
     } ~ get {
-      onSuccess(find()) { builds =>
-        complete(builds)
-      }
+      complete(getNestedBuilds(find()))
     } ~ post {
       entity(as[Build]) { build =>
         println(build)

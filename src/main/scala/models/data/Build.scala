@@ -9,6 +9,8 @@ import _root_.utils.KeyGenerator
 import models.equipments._
 import models.stats.MainStat
 import reactivemongo.bson._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
   * Created by stephane on 10/02/2017.
@@ -41,10 +43,17 @@ case class NestedBuild private (_id: Option[String], circleName: String, level: 
     this(build._id,build.circleName,build.level,build.mainStat, stuff)
   }
 }
-/*
+
 object NestedBuild {
-  def apply(build: Build, stuff: Stuff) = new NestedBuild(build,stuff)
-}*/
+  def apply(build: Option[Build], stuff: Option[Stuff]) = build match {
+    case Some(b) => Some(new NestedBuild(b,stuff))
+    case None => None
+  }
+
+  def apply(build: Build, stuff: Future[Option[Stuff]]) = {
+    stuff.map( s => new NestedBuild(build,s))
+  }
+}
 
 object Stuff {
   implicit val stuffHandler = Macros.handler[Stuff]

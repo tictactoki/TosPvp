@@ -5,6 +5,7 @@ import db.EquipmentController._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import formats.JsonFormat
 import spray.json.DefaultJsonProtocol._
+import utils.ConstantsFields
 
 /**
   * Created by wong on 19/02/17.

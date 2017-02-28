@@ -13,15 +13,15 @@ import scala.concurrent.Future
   * Created by stephane on 24/02/2017.
   */
 object BuildController extends MongoCrud[Build] {
-  override val mainCollection: Future[BSONCollection] = getCollection(Builds)
+  override protected val mainCollection: Future[BSONCollection] = getCollection(Builds)
 }
 
 object EquipmentController extends MongoCrud[Equipment] {
-  override val mainCollection: Future[BSONCollection] = getCollection(Equipments)
+  override protected val mainCollection: Future[BSONCollection] = getCollection(Equipments)
 }
 
 object StatController extends MongoCrud[MainStat] {
-  override val mainCollection: Future[BSONCollection] = getCollection(Stats)
+  override protected val mainCollection: Future[BSONCollection] = getCollection(Stats)
 }
 
 object StuffController extends MongoCrud[Stuff] {

@@ -36,7 +36,7 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuffId = stuff._id)
   val circle = CircleFactory(b)
 
-  val route = buildRoute ~ equipmentRoute
+  val route = buildRoute ~ equipmentRoute ~ stuffRoute
 
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8090)
