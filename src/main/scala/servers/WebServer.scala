@@ -26,15 +26,15 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val weapon = new Weapon(name = "test", `type` = ConstantsFields.Sword)
-  val armor = new Armor(name = "test", `type` = ConstantsFields.Cloth)
+  //val weapon = new Weapon(name = "test", `type` = ConstantsFields.Sword)
+  //val armor = new Armor(name = "test", `type` = ConstantsFields.Cloth)
 
-  val stuff = new Stuff(armor = Some(armor), firstHand = Some(weapon))
+  //val stuff = new Stuff(armor = Some(armor), firstHand = Some(weapon))
 
   val user = User("test")
 
-  val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuffId = stuff._id)
-  val circle = CircleFactory(b)
+  //val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuffId = stuff._id)
+  //val circle = CircleFactory(b)
 
   val route = buildRoute ~ equipmentRoute ~ stuffRoute
 

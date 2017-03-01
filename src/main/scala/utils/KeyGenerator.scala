@@ -9,4 +9,6 @@ object KeyGenerator {
 
   def createNewKeyAsString = Some(BSONObjectID.generate().stringify)
 
+  def createBsonKey = Some(BSONObjectID.generate())
+
 }

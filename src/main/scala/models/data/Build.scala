@@ -37,7 +37,11 @@ case class Stuff(_id: Option[String] = KeyGenerator.createNewKeyAsString,
 
 }
 
-case class Build(_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuffId: Option[String] = None)
+case class Build private (_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuffId: Option[String] = None) {
+  def this(b: Build) = {
+    this(circleName = b.circleName, level = b.level, mainStat = b.mainStat, stuffId = b.stuffId)
+  }
+}
 case class NestedBuild private (_id: Option[String], circleName: String, level: Int, mainStat: MainStat, stuff: Option[Stuff] = None) {
   def this(build: Build, stuff: Option[Stuff]) = {
     this(build._id,build.circleName,build.level,build.mainStat, stuff)
