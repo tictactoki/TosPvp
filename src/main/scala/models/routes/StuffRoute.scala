@@ -10,7 +10,7 @@ import formats.JsonFormat
   */
 trait StuffRoute { that: JsonFormat =>
 
-  val stuffRoute = path("stuffs") {
+  protected val stuffRoute = path("stuffs") {
     get {
       parameter('_id.as[String]) { id =>
         complete(findById(Some(id)))

@@ -3,7 +3,7 @@ package formats
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import models.User
 import models.classes.{CircleFactory, Circle}
-import models.data.{NestedBuild, Stuff, Build}
+import models.data._
 import models.equipments._
 import models.stats.{OffensiveStat, DefensiveStat, BasicStat, MainStat}
 import spray.json.DefaultJsonProtocol._
@@ -69,12 +69,12 @@ trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
         ConstantsFields.BasicStat -> basicStatFormat.write(obj.basicStat),
         ConstantsFields.DefensiveStat -> defensiveStatFormat.write(obj.defensiveStat),
         ConstantsFields.OffensiveStat -> offensiveStatFormat.write(obj.offensiveStat),
-        ConstantsFields.Build -> buildFormat.write(obj.build)
+        ConstantsFields.Build -> nestedBuildFormat.write(obj.build)
       )
     }
 
     override def read(json: JsValue): Circle = {
-      Try (CircleFactory(buildFormat.read(json))).getOrElse(throw new Exception("The json format is not correct" +  json))
+      Try (CircleFactory(nestedBuildFormat.read(json))).getOrElse(throw new Exception("The json format is not correct" +  json))
     }
   }
 
@@ -88,5 +88,7 @@ trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
 
   implicit val stuffFormat: RootJsonFormat[Stuff] = jsonFormat10(Stuff.apply)
   val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
-  implicit val nestedBuildFormat = jsonFormat5(NestedBuild.apply)
+  implicit val nestedBuildFormat: RootJsonFormat[NestedBuild] = jsonFormat5(NestedBuild.apply)
+  implicit val pvpFormat: RootJsonFormat[Pvp] = jsonFormat2(Pvp.apply)
+  implicit val circleWithComputeFormat: RootJsonFormat[CircleWithCompute] = jsonFormat4(CircleWithCompute.apply)
 }

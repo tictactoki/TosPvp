@@ -37,7 +37,7 @@ case class Stuff(_id: Option[String] = KeyGenerator.createNewKeyAsString,
 
 }
 
-case class Build private (_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuffId: Option[String] = None) {
+case class Build (_id: Option[String] = KeyGenerator.createNewKeyAsString, circleName: String, level: Int, mainStat: MainStat, stuffId: Option[String] = None) {
   def this(b: Build) = {
     this(circleName = b.circleName, level = b.level, mainStat = b.mainStat, stuffId = b.stuffId)
   }

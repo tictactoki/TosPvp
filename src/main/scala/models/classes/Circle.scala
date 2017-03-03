@@ -1,7 +1,7 @@
 package models.classes
 
 
-import models.data.{Stuff, Build}
+import models.data.{NestedBuild, Stuff, Build}
 import models.equipments.Weapon
 import models.stats.{BasicStat, DefensiveStat, OffensiveStat}
 
@@ -13,7 +13,7 @@ import scala.collection.mutable.HashMap
 sealed trait Circle {
 
 
-  val build: Build
+  val build: NestedBuild
   val aoeRatio: Int
   // map for every circles
   lazy val circles = HashMap[String,Int]()
@@ -95,7 +95,7 @@ object CircleFactory {
   final val Swordsman = "Swordsman"
   final val Wizard = "Wizard"
 
-  def apply(build: Build): Circle = build.circleName match {
+  def apply(build: NestedBuild): Circle = build.circleName match {
     case Cleric => new Cleric(build)
     case Archer => new Archer(build)
     case Swordsman => new Swordsman(build)
@@ -115,7 +115,7 @@ object CircleFactory {
 case class CircleStep(name: String, unLockedRank: Int)
 
 
-case class Swordsman(override val build: Build) extends Circle {
+case class Swordsman(override val build: NestedBuild) extends Circle {
   override val aoeRatio: Int = 4
   override protected val HPMultiplier: Double = 3.3
   override protected val buffLimit: Int = 7
@@ -127,7 +127,7 @@ case class Swordsman(override val build: Build) extends Circle {
   override protected def getBlock: Double = super.getBlock + (0.03 * build.level)
 }
 
-case class Archer(override val build: Build) extends Circle {
+case class Archer(override val build: NestedBuild) extends Circle {
   override val aoeRatio: Int = 0
   override protected val HPMultiplier: Double = 1.4
   override protected val buffLimit: Int = 5
@@ -141,7 +141,7 @@ case class Archer(override val build: Build) extends Circle {
   override protected def getAccuracy: Long = super.getAccuracy + ((build.level + 4) / 4)
 }
 
-case class Cleric(override val build: Build) extends Circle {
+case class Cleric(override val build: NestedBuild) extends Circle {
   override val aoeRatio: Int = 3
   override protected val HPMultiplier: Double = 1.5
   override protected val buffLimit: Int = 7
@@ -152,7 +152,7 @@ case class Cleric(override val build: Build) extends Circle {
   override protected def getSPRecovery: Long = super.getSPRecovery + build.level / 4
 }
 
-case class Wizard(override val build: Build) extends Circle {
+case class Wizard(override val build: NestedBuild) extends Circle {
   override val aoeRatio: Int = 3
   override protected val HPMultiplier: Double = 1.1
   override protected val buffLimit: Int = 5

@@ -19,7 +19,7 @@ import scala.concurrent.Future
   */
 trait BuildRoute { that: JsonFormat =>
 
-  val buildRoute = path("builds") {
+  protected val buildRoute = path("builds") {
     get {
       parameter('circleName.as[String]) { name =>
         complete(getNestedBuilds(find(query(ConstantsFields.CircleName,name))))
@@ -32,8 +32,9 @@ trait BuildRoute { that: JsonFormat =>
       complete(getNestedBuilds(find()))
     } ~ put {
       entity(as[Build]) { postBuild =>
-        onSuccess(BuildController.insert(new Build(postBuild))) { insert =>
-          complete(if(insert.ok) StatusCodes.OK else StatusCodes.BadRequest)
+        val ns = new Build(postBuild)
+        onSuccess(BuildController.insert(ns)) { insert =>
+          complete(if(insert.ok) ns else StatusCodes.BadRequest)
         }
       }
     }

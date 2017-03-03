@@ -2,29 +2,39 @@ package servers
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl._
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
+import akka.http.scaladsl.client.RequestBuilding
+import akka.http.scaladsl.model.Uri.{Query, Path}
+import akka.http.scaladsl.model.{Uri, HttpRequest, ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.{Sink, Source}
 import db.{StuffController, BuildController, EquipmentController}
 import formats.JsonFormat
 import models.User
 import models.classes.CircleFactory
-import models.data.{Build, Stuff}
+import models.data.{Pvp, NestedBuild, Build, Stuff}
 import models.equipments.{Armor, Weapon}
-import models.routes.{StuffRoute, BuildRoute, EquipmentRoute}
+import models.routes.{PvpRoute, StuffRoute, BuildRoute, EquipmentRoute}
 import models.stats.MainStat
 import utils.ConstantsFields
 
+import scala.concurrent.{Future, Await}
+import scala.concurrent.duration.Duration
 import scala.io.StdIn
 
 /**
   * Created by stephane on 08/02/2017.
   */
-object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with StuffRoute with  App {
+object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with StuffRoute with PvpRoute with  App {
 
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
+
+
+  /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","4e1ea8f55b5fc1c94f07daf7ed84108354f39a10")))))
+  val flow = Http().outgoingConnectionHttps("api.jcdecaux.com")
+  val t = source.via(flow).runWith(Sink.ignore)*/
 
   //val weapon = new Weapon(name = "test", `type` = ConstantsFields.Sword)
   //val armor = new Armor(name = "test", `type` = ConstantsFields.Cloth)
@@ -33,10 +43,11 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
 
   val user = User("test")
 
-  //val b = new Build(level = 3, circleName = "Cleric", mainStat = MainStat(10, 15, 19, 11, 1), stuffId = stuff._id)
+
+
   //val circle = CircleFactory(b)
 
-  val route = buildRoute ~ equipmentRoute ~ stuffRoute
+  val route = buildRoute ~ equipmentRoute ~ stuffRoute ~ pvpRoute
 
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8090)

@@ -14,7 +14,7 @@ import utils.QueryHelpers._
 trait EquipmentRoute {
   that: JsonFormat =>
 
-  val equipmentRoute = path("equipments") {
+  protected val equipmentRoute = path("equipments") {
     get {
       parameter("_id".as[String]) { id =>
         complete(findById(Some(id)))
