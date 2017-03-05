@@ -32,7 +32,7 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   implicit val executionContext = system.dispatcher
 
 
-  /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","4e1ea8f55b5fc1c94f07daf7ed84108354f39a10")))))
+  /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","")))))
   val flow = Http().outgoingConnectionHttps("api.jcdecaux.com")
   val t = source.via(flow).runWith(Sink.ignore)*/
 
@@ -43,7 +43,8 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
 
   val user = User("test")
 
-
+  /*val t = new Build(circleName = "Archer", level = 3, mainStat = MainStat(4,6,7,8,9))
+  BuildController.insert(t)*/
 
   //val circle = CircleFactory(b)
 

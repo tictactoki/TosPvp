@@ -33,6 +33,7 @@ trait BuildRoute { that: JsonFormat =>
     } ~ put {
       entity(as[Build]) { postBuild =>
         val ns = new Build(postBuild)
+        println(ns)
         onSuccess(BuildController.insert(ns)) { insert =>
           complete(if(insert.ok) ns else StatusCodes.BadRequest)
         }
