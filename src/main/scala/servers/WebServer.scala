@@ -4,11 +4,12 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl._
 import akka.http.scaladsl.client.RequestBuilding
 import akka.http.scaladsl.model.Uri.{Query, Path}
+import akka.http.scaladsl.model.headers.HttpOriginRange
 import akka.http.scaladsl.model.{Uri, HttpRequest, ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import ch.megard.akka.http.cors.CorsSettings
+import ch.megard.akka.http.cors.{HttpHeaderRange, CorsSettings}
 import db.{StuffController, BuildController, EquipmentController}
 import formats.JsonFormat
 import models.User
@@ -19,10 +20,12 @@ import models.routes.{PvpRoute, StuffRoute, BuildRoute, EquipmentRoute}
 import models.stats.MainStat
 import utils.ConstantsFields
 
+import scala.collection.immutable.Seq
 import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 import scala.io.StdIn
 import ch.megard.akka.http.cors.CorsDirectives._
+import akka.http.scaladsl.model.HttpMethods._
 
 /**
   * Created by stephane on 08/02/2017.
@@ -33,7 +36,8 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  val settings = CorsSettings.defaultSettings.copy(allowGenericHttpRequests = false)
+  val seq = Seq(GET, POST, HEAD, OPTIONS, PUT)
+  val settings = CorsSettings.defaultSettings.copy(allowedMethods = seq)
 
   /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","")))))
   val flow = Http().outgoingConnectionHttps("api.jcdecaux.com")
@@ -51,7 +55,7 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
 
   //val circle = CircleFactory(b)
 
-  val route = cors() {
+  val route = cors(settings) {
     buildRoute ~ equipmentRoute ~ stuffRoute ~ pvpRoute
   }
 
