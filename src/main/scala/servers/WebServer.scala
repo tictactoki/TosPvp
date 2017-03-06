@@ -8,6 +8,7 @@ import akka.http.scaladsl.model.{Uri, HttpRequest, ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
+import ch.megard.akka.http.cors.CorsSettings
 import db.{StuffController, BuildController, EquipmentController}
 import formats.JsonFormat
 import models.User
@@ -21,6 +22,7 @@ import utils.ConstantsFields
 import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 import scala.io.StdIn
+import ch.megard.akka.http.cors.CorsDirectives._
 
 /**
   * Created by stephane on 08/02/2017.
@@ -31,6 +33,7 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
+  val settings = CorsSettings.defaultSettings.copy(allowGenericHttpRequests = false)
 
   /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","")))))
   val flow = Http().outgoingConnectionHttps("api.jcdecaux.com")
@@ -48,7 +51,9 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
 
   //val circle = CircleFactory(b)
 
-  val route = buildRoute ~ equipmentRoute ~ stuffRoute ~ pvpRoute
+  val route = cors() {
+    buildRoute ~ equipmentRoute ~ stuffRoute ~ pvpRoute
+  }
 
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8090)

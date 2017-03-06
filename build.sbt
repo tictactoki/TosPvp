@@ -14,6 +14,7 @@ val httpVersion = "10.0.3"
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-simple" % "1.6.4",
+  "ch.megard" %% "akka-http-cors" % "0.1.11",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-agent" % akkaVersion,
   "com.typesafe.akka" %% "akka-camel" % akkaVersion,
