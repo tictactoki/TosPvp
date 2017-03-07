@@ -19,12 +19,14 @@ trait CircleRoute { that: JsonFormat =>
     get {
       complete(CircleFactory.circles)
     } ~ post {
-      entity(as[Build]) { build =>
-          onSuccess(BuildController.insert(new Build(build))) { insert =>
+      entity(as[Build]) { postbuild =>
+        val build = new Build(postbuild)
+          onSuccess(BuildController.insert(build)) { insert =>
             complete {
               if(insert.ok) {
                 BuildController.getNestedBuild(BuildController.findById(build._id)).map {
-                  _.map(CircleFactory(_))
+                  _.map{CircleFactory(_)
+                  }
                 }
               }
               else StatusCodes.NotAcceptable

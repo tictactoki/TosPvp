@@ -37,9 +37,9 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   implicit val executionContext = system.dispatcher
 
   val seq = Seq(GET, POST, HEAD, OPTIONS, PUT)
-  val allowHeader = HttpHeaderRange.*
-  val allowOrigin = HttpOriginRange.*
-  val settings = CorsSettings.defaultSettings.copy(allowedMethods = seq, allowedHeaders = allowHeader, allowedOrigins = allowOrigin)
+  //val allowHeader = HttpHeaderRange.*
+  //val allowOrigin = HttpOriginRange.*
+  val settings = CorsSettings.defaultSettings.copy(allowedMethods = seq)//, allowedHeaders = allowHeader, allowedOrigins = allowOrigin)
 
   /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","")))))
   val flow = Http().outgoingConnectionHttps("api.jcdecaux.com")
