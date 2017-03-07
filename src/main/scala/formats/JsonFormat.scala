@@ -2,7 +2,7 @@ package formats
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import models.User
-import models.classes.{CircleFactory, Circle}
+import models.classes.{FirstCircle, CircleFactory, Circle}
 import models.data._
 import models.equipments._
 import models.stats.{OffensiveStat, DefensiveStat, BasicStat, MainStat}
@@ -24,6 +24,7 @@ trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val basicStatFormat: RootJsonFormat[BasicStat] = jsonFormat6(BasicStat.apply)
   implicit val mainStatFormat: RootJsonFormat[MainStat] = jsonFormat5(MainStat.apply)
   implicit val armorFormat: RootJsonFormat[Armor] = jsonFormat8(Armor.apply)
+  implicit val firstCircle: RootJsonFormat[FirstCircle] = jsonFormat2(FirstCircle.apply)
   val weaponFormat: RootJsonFormat[Weapon] = jsonFormat8(Weapon.apply)
 
   implicit object EquipmentFormat extends RootJsonFormat[Equipment] {

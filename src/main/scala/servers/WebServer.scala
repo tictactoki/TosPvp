@@ -16,7 +16,7 @@ import models.User
 import models.classes.CircleFactory
 import models.data.{Pvp, NestedBuild, Build, Stuff}
 import models.equipments.{Armor, Weapon}
-import models.routes.{PvpRoute, StuffRoute, BuildRoute, EquipmentRoute}
+import models.routes._
 import models.stats.MainStat
 import utils.ConstantsFields
 
@@ -30,14 +30,16 @@ import akka.http.scaladsl.model.HttpMethods._
 /**
   * Created by stephane on 08/02/2017.
   */
-object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with StuffRoute with PvpRoute with  App {
+object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with StuffRoute with PvpRoute with CircleRoute with  App {
 
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
   val seq = Seq(GET, POST, HEAD, OPTIONS, PUT)
-  val settings = CorsSettings.defaultSettings.copy(allowedMethods = seq)
+  val allowHeader = HttpHeaderRange.*
+  val allowOrigin = HttpOriginRange.*
+  val settings = CorsSettings.defaultSettings.copy(allowedMethods = seq, allowedHeaders = allowHeader, allowedOrigins = allowOrigin)
 
   /*val source = Source.single(HttpRequest(uri = Uri(path = Path("/vls/v1/stations")).withQuery(Query(("apiKey","")))))
   val flow = Http().outgoingConnectionHttps("api.jcdecaux.com")
@@ -56,7 +58,7 @@ object WebServer extends JsonFormat with BuildRoute with EquipmentRoute with Stu
   //val circle = CircleFactory(b)
 
   val route = cors(settings) {
-    buildRoute ~ equipmentRoute ~ stuffRoute ~ pvpRoute
+    buildRoute ~ equipmentRoute ~ stuffRoute ~ pvpRoute ~ circleRoute
   }
 
 
