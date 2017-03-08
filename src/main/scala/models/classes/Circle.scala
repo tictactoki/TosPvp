@@ -89,7 +89,7 @@ sealed trait Circle {
 }
 
 
-sealed case class FirstCircle(circleName: String, mainStat: MainStat)
+sealed case class FirstCircle(label: String, value: MainStat)
 
 object CircleFactory {
 
