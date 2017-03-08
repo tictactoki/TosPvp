@@ -30,7 +30,7 @@ sealed trait Circle {
 
   protected def getOffensiveStat: OffensiveStat = OffensiveStat(getPhysicalAttack(), getSecPhysicalAttack(), getMagicAttack(), getAoeRatio(), getBlockPenetration, getCriticalAttack, getCriticalRate)
 
-  protected def getBasicStat = BasicStat(getHP.toLong, getSP.toLong, getHPRecovery, getMaxWeightLimit, getMaximumStamina())
+  protected def getBasicStat = BasicStat(getHP.toLong, getSP.toLong, getHPRecovery, getSPRecovery, getMaxWeightLimit, getMaximumStamina())
 
   protected def getAoeRatio(weapon: Option[Weapon] = None): Int = aoeRatio + weapon.map(_.offensiveStat.aoeAttackRatio).getOrElse(0)
 
