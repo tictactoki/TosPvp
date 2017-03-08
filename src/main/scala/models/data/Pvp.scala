@@ -6,7 +6,7 @@ import models.classes.{Circle, CircleFactory}
   * Created by stephane on 03/03/2017.
   */
 case class Pvp(p1: NestedBuild, p2: NestedBuild)
-
+case class PostPvp(p1: Build, p2: Build)
 case class CircleWithCompute(c1: Circle, e1: Double, c2: Circle, e2: Double)
 
 object Pvp {

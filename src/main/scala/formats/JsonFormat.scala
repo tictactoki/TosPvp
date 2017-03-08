@@ -24,7 +24,7 @@ trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val basicStatFormat: RootJsonFormat[BasicStat] = jsonFormat6(BasicStat.apply)
   implicit val mainStatFormat: RootJsonFormat[MainStat] = jsonFormat5(MainStat.apply)
   implicit val armorFormat: RootJsonFormat[Armor] = jsonFormat8(Armor.apply)
-  implicit val firstCircle: RootJsonFormat[FirstCircle] = jsonFormat2(FirstCircle.apply)
+  implicit val firstCircleFormat: RootJsonFormat[FirstCircle] = jsonFormat2(FirstCircle.apply)
   val weaponFormat: RootJsonFormat[Weapon] = jsonFormat8(Weapon.apply)
 
   implicit object EquipmentFormat extends RootJsonFormat[Equipment] {
@@ -92,4 +92,6 @@ trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
   implicit val nestedBuildFormat: RootJsonFormat[NestedBuild] = jsonFormat5(NestedBuild.apply)
   implicit val pvpFormat: RootJsonFormat[Pvp] = jsonFormat2(Pvp.apply)
   implicit val circleWithComputeFormat: RootJsonFormat[CircleWithCompute] = jsonFormat4(CircleWithCompute.apply)
+  implicit val postPvpFormat: RootJsonFormat[PostPvp] = jsonFormat2(PostPvp.apply)
+
 }
