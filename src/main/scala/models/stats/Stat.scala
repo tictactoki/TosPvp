@@ -48,7 +48,7 @@ object DefensiveStat {
 }
 
 object BasicStat {
-  implicit val basicStathandler = Macros.handler[BasicStat]
+  implicit val basicStatHandler = Macros.handler[BasicStat]
 }
 
 object MainStat {
