@@ -98,7 +98,12 @@ object CircleFactory {
   final val Archer = "Archer"
   final val Swordsman = "Swordsman"
   final val Wizard = "Wizard"
-  final val circles = List(FirstCircle(Cleric, MainStat(6,7,4,8,3)),FirstCircle(Archer, MainStat(7,4,3,4,9)),FirstCircle(Swordsman, MainStat(8,9,2,3,6)),FirstCircle(Wizard, MainStat(3,3,9,8,4)))
+  final val circles = List(
+    FirstCircle(Cleric, MainStat(6,7,4,8,3)),
+    FirstCircle(Archer, MainStat(7,4,3,4,9)),
+    FirstCircle(Swordsman, MainStat(8,9,2,3,6)),
+    FirstCircle(Wizard, MainStat(3,3,9,8,4))
+  )
 
   def apply(build: NestedBuild): Circle = build.circleName match {
     case Cleric => new Cleric(build)

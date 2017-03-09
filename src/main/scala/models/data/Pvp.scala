@@ -23,7 +23,7 @@ object Pvp {
   }
 
   def computePvpEvasion(c1: Circle, c2: Circle) = {
-    (c1.defensiveStat.evasion - c2.defensiveStat.evasion) / (0.3605 * c1.build.level + 18.64) * (Math.pow(c2.build.level,0.0335))
+    (c1.defensiveStat.evasion - c2.offensiveStat.accuracy) / ((0.3605 * c1.build.level + 18.64) * (Math.pow(c2.build.level,0.0335)))
   }
 
   def getData(p1: NestedBuild, p2: NestedBuild) = {
