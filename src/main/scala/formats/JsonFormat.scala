@@ -91,7 +91,7 @@ trait JsonFormat extends DefaultJsonProtocol with SprayJsonSupport {
   val buildFormat: RootJsonFormat[Build] = jsonFormat5(Build.apply)
   implicit val nestedBuildFormat: RootJsonFormat[NestedBuild] = jsonFormat5(NestedBuild.apply)
   implicit val pvpFormat: RootJsonFormat[Pvp] = jsonFormat2(Pvp.apply)
-  implicit val circleWithComputeFormat: RootJsonFormat[CircleWithCompute] = jsonFormat4(CircleWithCompute.apply)
+  implicit val circleWithComputeFormat: RootJsonFormat[CircleWithCompute] = jsonFormat6(CircleWithCompute.apply)
   implicit val postPvpFormat: RootJsonFormat[PostPvp] = jsonFormat2(PostPvp.apply)
 
 }
